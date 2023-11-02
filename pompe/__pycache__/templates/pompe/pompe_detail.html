@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Pompe Detail</h2>
+  <p>Type: {{ pompe.type }}</p>
+  <p>Model: {{ pompe.model }}</p>
+  <p>ID Cuve: {{ pompe.id_cuve }}</p>
+  <p>ID Pompiste: {{ pompe.id_pompiste }}</p>
+  <a href="{% url 'pompe:pompe_list' %}">Back to Pompe List</a>
+{% end block %}

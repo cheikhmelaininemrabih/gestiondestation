@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-
+import pymysql
+pymysql.version_info = (1, 4, 6, 'final', 0)
+pymysql.install_as_MySQLdb
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -33,6 +35,9 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'station.apps.StationConfig',
+    'cuve.apps.CuveConfig',
+    'pompe.apps.PompeConfig',
+    'pompiste.apps.PompisteConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -77,10 +82,15 @@ WSGI_APPLICATION = 'gs.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'django_mvc',  # Replace with your database name
+        'USER': 'root',  # Replace with your MySQL username
+        'PASSWORD': '',  # Replace with your MySQL password
+        'HOST': 'localhost',  # If your database is on the same machine, use 'localhost'
+        'PORT': '3306',  # Default MySQL port
     }
 }
+
 
 
 # Password validation

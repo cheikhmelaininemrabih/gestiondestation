@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Pompe List</h2>
+  <ul>
+    {% for pompe in pompe_list %}
+      <li><a href="{% url 'pompe:pompe_detail' pompe.pk %}">{{ pompe.type }}</a></li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'pompe:pompe_create' %}">Create a Pompe</a>
+{% end block %}

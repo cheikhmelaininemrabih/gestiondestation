@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pompiste List</title>
+</head>
+<body>
+    <h1>Pompiste List</h1>
+
+    <ul>
+        {% for pompiste in pompistes %}
+            <li>
+                Name: {{ pompiste.Nom }} {{ pompiste.Prenom }}<br>
+                Address: {{ pompiste.Adresse }}<br>
+                Telephone: {{ pompiste.tel }}<br>
+                <a href="{% url 'pompiste_update' pompiste.pk %}">Edit</a>
+                <a href="{% url 'pompiste_delete' pompiste.pk %}">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'pompiste_create' %}">Create Pompiste</a>
+</body>
+</html>
