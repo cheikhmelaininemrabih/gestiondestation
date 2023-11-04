@@ -30,12 +30,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Application definition
 
 INSTALLED_APPS = [
     'station.apps.StationConfig',
     'cuve.apps.CuveConfig',
+    # 'users.apps.UsersConfig',
+    'vents.apps.VentsConfig',
     'pompe.apps.PompeConfig',
     'pompiste.apps.PompisteConfig',
     'django.contrib.admin',

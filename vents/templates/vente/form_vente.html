@@ -1,0 +1,13 @@
+<!-- vents/templates/vents/vente_form.html -->
+
+{% extends "base_generic.html" %}  <!-- If you have a base template you extend from -->
+{% block content %}
+
+<!-- Always include the CSRF token in your forms -->
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload</button>
+</form>
+
+{% endblock %}
