@@ -3,8 +3,8 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .models import Cuve
 
-def index(request):
-    return render(request, 'cuve/index.html')
+# def index(request):
+#     return render(request, 'cuve/index.html')
 
 class CuveListView(ListView):
     model = Cuve
@@ -13,7 +13,7 @@ class CuveListView(ListView):
 
 class CuveCreateView(CreateView):
     model = Cuve
-    template_name = 'cuve/cuve_form.html'
+    template_name = 'cuve_form.html'
     fields = ['Nb_pmp_alimente', 'charge', 'stocke', 'Qt_min', 'id_station']
     
     def get_success_url(self):
@@ -21,15 +21,15 @@ class CuveCreateView(CreateView):
 
 class CuveUpdateView(UpdateView):
     model = Cuve
-    template_name = 'cuve/cuve_form.html'
+    template_name = 'cuve_form.html'
     fields = ['Nb_pmp_alimente', 'charge', 'stocke', 'Qt_min', 'id_station']
     
     def get_success_url(self):
-        return reverse('cuve_list')
+        return reverse('cuve_form')
 
 class CuveDeleteView(DeleteView):
     model = Cuve
-    template_name = 'cuve/cuve_confirm_delete.html'
+    template_name = 'cuve_confirm_delete.html'
     
     def get_success_url(self):
-        return reverse('cuve_list')
+        return reverse('cuve_confirm_list')

@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('Nmbr_cuves', models.IntegerField()),
                 ('Nmbr_pompes', models.IntegerField()),
                 ('Nmbr_pompistes', models.IntegerField()),
-                ('id_users', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                # ('id_users', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

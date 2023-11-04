@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'gs.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django_mvc',  # Replace with your database name
+        'NAME': 'g_s',  # Replace with your database name
         'USER': 'root',  # Replace with your MySQL username
         'PASSWORD': '',  # Replace with your MySQL password
         'HOST': 'localhost',  # If your database is on the same machine, use 'localhost'
