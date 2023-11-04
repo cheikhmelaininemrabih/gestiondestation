@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Liste des Pompes</title>
+</head>
+<body>
+    <h1>Liste des Pompes</h1>
+    <ul>
+        {% for pompe in pompe_list %}
+            <li><a href="{% url 'pompe_detail' pompe.pk %}">{{ pompe.type }}</a></li>
+        {% empty %}
+            <li>Aucune Pompe n'a été trouvée.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'pompe_create' %}">Créer une nouvelle Pompe</a>
+</body>
+</html>

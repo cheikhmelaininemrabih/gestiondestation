@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formulaire Pompe</title>
+</head>
+<body>
+    <h1>Formulaire Pompe</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Enregistrer</button>
+    </form>
+
+    <a href="{% if pompe.pk %}{% url 'pompe_detail' pompe.pk %}{% else %}{% url 'pompe_list' %}{% endif %}">Retour</a>
+</body>
+</html>

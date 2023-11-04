@@ -1,0 +1,30 @@
+  <h2>Détails de la Station</h2>
+  <table class="table">
+    <tr>
+      <th>Libelle</th>
+      <td>{{ station.libelle }}</td>
+    </tr>
+    <tr>
+      <th>Location</th>
+      <td>{{ station.location }}</td>
+    </tr>
+    <tr>
+      <th>Nombre de Cuves</th>
+      <td>{{ station.Nmbr_cuves }}</td>
+    </tr>
+    <tr>
+      <th>Nombre de Pompes</th>
+      <td>{{ station.Nmbr_pompes }}</td>
+    </tr>
+    <tr>
+      <th>Nombre de Pompistes</th>
+      <td>{{ station.Nmbr_pompistes }}</td>
+    </tr>
+    <tr>
+      <th>Utilisateur</th>
+      <td>{{ station.id_users }}</td>
+    </tr>
+  </table>
+  <a href="{% url 'station_list' %}" class="btn btn-secondary">Retour à la liste des stations</a>
+  <a href="{% url 'station_update' station.pk %}" class="btn btn-primary">Modifier la station</a>
+  <a href="{% url 'station_delete' station.pk %}" class="btn btn-danger">Supprimer la station</a>
