@@ -1,59 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}My Website{% endblock %}</title>
-    <!-- Include CSS and other common resources -->
+    <title>{% block title %}gestiondestation{% endblock %}</title>
+    
 </head>
 <body>
     <header>
         <nav>
             <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/about/">About</a></li>
-                <li><a href="/contact/">Contact</a></li>
+                
+                <li><a href="{% url 'station:station_list' %}">Station List</a></li>
+                <li><a href="{% url 'station:station_create' %}">Add Station</a></li>
                 <li><a href="{% url 'cuve:cuve_list' %}">Cuve List</a></li>
                 <li><a href="{% url 'cuve:cuve_create' %}">Add Cuve</a></li>
+                <li><a href="{% url 'pompe:pompe_list' %}">Pompe List</a></li>
+                <li><a href="{% url 'pompe:pompe_create' %}">Add Pompe</a></li>
+                <li><a href="{% url 'pompiste:pompiste_list' %}">Pompiste List</a></li>
+                <li><a href="{% url 'pompiste:pompiste_create' %}">Add Pompiste</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
         {% block content %}
-            {# Insert a table for the Cuve model here #}
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Number of Pumps Supplied</th>
-                        <th>Charge</th>
-                        <th>Stock</th>
-                        <th>Minimum Quantity</th>
-                        <th>Station</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for cuve in cuves %}
-                        <tr>
-                            <td>{{ cuve.id }}</td>
-                            <td>{{ cuve.Nb_pmp_alimente }}</td>
-                            <td>{{ cuve.charge }}</td>
-                            <td>{{ cuve.stocke }}</td>
-                            <td>{{ cuve.Qt_min }}</td>
-                            <td>{{ cuve.id_station }}</td>
-                            <td>
-                                <a href="{% url 'cuve:cuve_update' cuve.pk %}">Edit</a>
-                                <a href="{% url 'cuve:cuve_delete' cuve.pk %}">Delete</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <!-- The content for each specific page (e.g., station list, cuve list) will go here when those pages extend this template. -->
         {% endblock %}
     </main>
 
     <footer>
-        &copy; 2023 My Website
+        &copy; 2023 gestiondestation @supnum.mr
     </footer>
 </body>
 </html>

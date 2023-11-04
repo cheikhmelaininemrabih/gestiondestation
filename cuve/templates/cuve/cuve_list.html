@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Cuve List{% endblock %}
+
+{% block content %}
+<h1>Cuve List</h1>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nb_pmp_alimente</th>
+            <th>Charge</th>
+            <th>Stocke</th>
+            <th>Qt_min</th>
+            <th>Station</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cuve in cuves %}
+            <tr>
+                <td>{{ cuve.id }}</td>
+                <td>{{ cuve.Nb_pmp_alimente }}</td>
+                <td>{{ cuve.charge }}</td>
+                <td>{{ cuve.stocke }}</td>
+                <td>{{ cuve.Qt_min }}</td>
+                <td>{{ cuve.id_station.libelle }}</td>
+                <td>
+                    <a href="{% url 'cuve:cuve_update' cuve.pk %}">Edit</a>
+                    <a href="{% url 'cuve:cuve_delete' cuve.pk %}">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'cuve:cuve_create' %}">Add Cuve</a>
+{% endblock %}

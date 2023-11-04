@@ -11,6 +11,7 @@
         <button type="submit">Enregistrer</button>
     </form>
 
-    <a href="{% if pompe.pk %}{% url 'pompe_detail' pompe.pk %}{% else %}{% url 'pompe_list' %}{% endif %}">Retour</a>
+    <!-- Adjusted back link -->
+    <a href="{% url 'pompe:pompe_list' %}">Retour à la liste</a>
 </body>
 </html>

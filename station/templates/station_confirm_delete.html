@@ -1,9 +1,0 @@
-{% block content %}
-  <h2>Confirmation de Suppression</h2>
-  <p>Êtes-vous sûr de vouloir supprimer la station "{{ station }}" ?</p>
-  <form method="post">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
-  </form>
-  <a href="{% url 'station_list' %}" class="btn btn-secondary">Annuler</a>
-{% endblock %}

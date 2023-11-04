@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Liste des Pompistes{% endblock %}
+
+{% block content %}
+    <h1>Liste des Pompistes</h1>
+    <a href="{% url 'pompiste:pompiste_create' %}">Ajouter un Pompiste</a>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Adresse</th>
+                <th>Téléphone</th>
+                <th>Station</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pompiste in pompistes %}
+            <tr>
+                <td>{{ pompiste.id }}</td>
+                <td>{{ pompiste.Nom }}</td>
+                <td>{{ pompiste.Prenom }}</td>
+                <td>{{ pompiste.Adresse }}</td>
+                <td>{{ pompiste.tel }}</td>
+                <td>{{ pompiste.id_station }}</td>
+                <td>
+                    <a href="{% url 'pompiste:pompiste_update' pompiste.id %}">Edit</a> |
+                    <a href="{% url 'pompiste:pompiste_delete' pompiste.id %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

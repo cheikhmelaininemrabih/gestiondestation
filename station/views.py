@@ -1,31 +1,32 @@
-from django.urls import reverse
-from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .models import Station
-from django.urls import reverse_lazy
+
+def station_list(request):
+    station = Station.objects.all() 
+    return render(request, 'stations/station_list.html', {'station': station})
 
 class StationListView(ListView):
     model = Station
-    template_name = 'station_list.html'
+    template_name = 'station/station_list.html'
     context_object_name = 'stations'
+
 
 class StationCreateView(CreateView):
     model = Station
-    template_name = 'station_form.html'
+    template_name = 'station/station_form.html'
     fields = ['libelle', 'location', 'Nmbr_cuves', 'Nmbr_pompes', 'Nmbr_pompistes', 'id_users']
-    def get_success_url(self):
-        return reverse('station_list')
+    success_url = reverse_lazy('station:station_list')
 
 class StationUpdateView(UpdateView):
     model = Station
-    template_name = 'station_form.html'
+    template_name = 'station/station_form.html'
     fields = ['libelle', 'location', 'Nmbr_cuves', 'Nmbr_pompes', 'Nmbr_pompistes', 'id_users']
-    def get_success_url(self):
-        return reverse('station_list')
+    success_url = reverse_lazy('station:station_list')
+
 
 class StationDeleteView(DeleteView):
     model = Station
-    template_name = 'station_confirm_delete.html'
-
-    def get_success_url(self):
-        return reverse('station_confirm_list')
+    template_name = 'station/station_confirm_delete.html'
+    success_url = reverse_lazy('station:station_list')

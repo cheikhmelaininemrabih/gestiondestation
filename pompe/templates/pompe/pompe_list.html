@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Liste des Pompes</title>
+</head>
+<body>
+
+{% extends 'base.html' %}
+
+{% block title %}Liste des Pompes{% endblock %}
+
+{% block content %}
+    <h1>Liste des Pompes</h1>
+    {% if pompes %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Modèle</th>
+                <!-- Add other headers here if needed -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for pompe in pompes %}
+                <tr>
+                    <td>{{ pompe.id }}</td>
+                    <td>{{ pompe.type }}</td>
+                    <td>{{ pompe.modele }}</td>
+                    <!-- Add other pompe fields here if needed -->
+                    <td>
+                        <!-- Assuming you have update and delete views for pompes -->
+                        <a href="{% url 'pompe:pompe_update' pompe.pk %}">Edit</a>
+                        <a href="{% url 'pompe:pompe_delete' pompe.pk %}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>Aucune pompe n'a été trouvée.</p>
+    {% endif %}
+    <a href="{% url 'pompe:pompe_create' %}">Ajouter une nouvelle Pompe</a>
+{% endblock %}
+
+</body>
+</html>

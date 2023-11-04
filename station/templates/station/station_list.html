@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Station List{% endblock %}
+
+{% block content %}
+    <h1>Station List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Libelle</th>
+                <th>Location</th>
+                <th>Nmbr Cuves</th>
+                <th>Nmbr Pompes</th>
+                <th>Nmbr Pompistes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for station in stations %}
+                <tr>
+                    <td>{{ station.id }}</td>
+                    <td>{{ station.libelle }}</td>
+                    <td>{{ station.location }}</td>
+                    <td>{{ station.Nmbr_cuves }}</td>
+                    <td>{{ station.Nmbr_pompes }}</td>
+                    <td>{{ station.Nmbr_pompistes }}</td>
+                    <td>
+                        <a href="{% url 'station:station_update' station.pk %}">Edit</a>
+                        <a href="{% url 'station:station_delete' station.pk %}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'station:station_create' %}">Add Station</a>
+{% endblock %}
