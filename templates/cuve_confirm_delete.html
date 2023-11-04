@@ -1,0 +1,13 @@
+<!-- cuve/templates/cuve/cuve_confirm_delete.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Confirm Deletion</h1>
+  <p>Are you sure you want to delete this Cuve?</p>
+  <form method="post">
+    {% csrf_token %}
+    <input type="submit" value="Yes, delete">
+  </form>
+  <a href="{% url 'cuve:cuve_list' %}">Cancel</a>
+{% endblock %}

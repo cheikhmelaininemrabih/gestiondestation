@@ -1,12 +1,11 @@
+# cuve/urls.py
 from django.urls import path
-from . import views
+from .views import CuveListView, CuveCreateView, CuveUpdateView, CuveDeleteView
 
 app_name = 'cuve'
-
 urlpatterns = [
-    path('cuve/', views.CuveListView.as_view(), name='cuve_list'),
-    path('create/', views.CuveCreateView.as_view(), name='cuve_create'),
-   
-    path('<int:pk>/update/', views.CuveUpdateView.as_view(), name='cuve_update'),
-    path('<int:pk>/delete/', views.CuveDeleteView.as_view(), name='cuve_delete'),
+    path('', CuveListView.as_view(), name='cuve_list'),
+    path('create/', CuveCreateView.as_view(), name='cuve_create'),
+    path('<int:pk>/update/', CuveUpdateView.as_view(), name='cuve_update'),
+    path('<int:pk>/delete/', CuveDeleteView.as_view(), name='cuve_delete'),
 ]

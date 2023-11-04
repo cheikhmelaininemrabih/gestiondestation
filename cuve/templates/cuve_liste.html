@@ -1,7 +1,0 @@
-<h1>Cuve List</h1>
-<ul>
-  {% for cuve in cuves %}
-    <li><a href="{% url 'cuve_update' cuve.pk %}">{{ cuve }}</a></li>
-  {% endfor %}
-</ul>
-<a href="{% url 'cuve_create' %}">Create a new Cuve</a>
