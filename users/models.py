@@ -1,14 +1,11 @@
-
 from django.contrib.auth.models import User
 from django.db import models
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     statut = models.IntegerField(default=0)
-    id = models.AutoField(primary_key=True)
-    login = models.CharField(max_length=50, unique=True)
-    Nom = models.CharField(max_length=100)
-    tel = models.CharField(max_length=20)
+    nom = models.CharField(max_length=100)
+    # tel = models.CharField(max_length=20)
 
     @property
     def is_admin(self):

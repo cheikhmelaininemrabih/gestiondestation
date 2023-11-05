@@ -1,0 +1,12 @@
+<!-- stations/station_detail.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Station Detail: {{ station.libelle }}</h2>
+<p>Location: {{ station.location }}</p>
+<p>Number of Tanks: {{ station.Nmbr_cuves }}</p>
+<p>Number of Pumps: {{ station.Nmbr_pompes }}</p>
+<p>Number of Pump Operators: {{ station.Nmbr_pompistes }}</p>
+<!-- Add more fields as necessary -->
+{% endblock %}

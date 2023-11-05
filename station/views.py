@@ -2,6 +2,14 @@ from django.urls import reverse_lazy
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .models import Station
+from django.shortcuts import get_object_or_404, render
+from django.contrib.auth.decorators import login_required
+
+
+
+def station_detail(request, pk):
+    station = get_object_or_404(Station, pk=pk)  
+    return render(request, 'stations/station_detail.html', {'station': station})
 
 def station_list(request):
     station = Station.objects.all() 

@@ -9,7 +9,8 @@
     <p>
       <label for="id_username">Username:</label>
       <input id="id_username" type="text" name="username" required>
-    </p>
+  
+    
     <p>
       <label for="id_password">Password:</label>
       <input id="id_password" type="password" name="password" required>
@@ -21,10 +22,13 @@
     <p>
       <label for="id_statut">Statut:</label>
       <select id="id_statut" name="statut">
-        <option value="admin">Admin</option>
-        <option value="responsable">Responsable</option>
-        <option value="pompiste">Pompiste</option>
-        <!-- Add other statut options as necessary -->
+        <select id="id_statut" name="statut">
+            <option value="0">Admin</option>
+            <option value="1">Responsable</option>
+            <option value="2">Pompiste</option>
+        </select>
+        
+      
       </select>
     </p>
     <button type="submit">Register</button>
