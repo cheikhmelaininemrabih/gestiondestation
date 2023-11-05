@@ -10,35 +10,52 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
 import pymysql
+from dotenv import load_dotenv
+
+# Load environment variables from a .env file
+load_dotenv()
 pymysql.version_info = (1, 4, 6, 'final', 0)
 pymysql.install_as_MySQLdb
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'default-secret-key')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=^s##!u^gqj1=n^@7!v&54ay-+8gt$2i+#clgdg&h&-ejz^j4='
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+# ... Your existing database settings remain unchanged ...
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Directory where static files will be collected
+
+# Media files
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Application definition
+# Security settings
+SECURE_SSL_REDIRECT = os.getenv('DJANGO_SECURE_SSL_REDIRECT', 'False') == 'True'
+SESSION_COOKIE_SECURE = os.getenv('DJANGO_SESSION_COOKIE_SECURE', 'False') == 'True'
+CSRF_COOKIE_SECURE = os.getenv('DJANGO_CSRF_COOKIE_SECURE', 'False') == 'True'
+X_FRAME_OPTIONS = 'DENY'
+
+# Email backend settings (example for console backend)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# ... rest of your settings ...
+
+
 
 INSTALLED_APPS = [
     'station.apps.StationConfig',
     'cuve.apps.CuveConfig',
-    # 'users.apps.UsersConfig',
+    'users.apps.UsersConfig',
     'vents.apps.VentsConfig',
     'pompe.apps.PompeConfig',
     'pompiste.apps.PompisteConfig',

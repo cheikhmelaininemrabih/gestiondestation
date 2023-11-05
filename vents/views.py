@@ -8,7 +8,7 @@ def create_vente(request):
         if form.is_valid():
             new_vente = form.save()
             
-            return redirect('vents:vente_list')
+            return redirect('vente:vente_list')
     else:
         form = VenteForm()
-    return render(request, 'vents/create_vente.html', {'form': form})
+    return render(request, 'vente/create_vente.html', {'form': form})

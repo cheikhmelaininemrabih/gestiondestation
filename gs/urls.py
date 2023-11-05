@@ -14,6 +14,7 @@ urlpatterns = [
     path('pompe/', include(('pompe.urls', 'pompe'), namespace='pompe')),
     path('pompiste/', include(('pompiste.urls', 'pompiste'), namespace='pompiste')),
     path('vents/', include('vents.urls')),
+     path('users/', include('users.urls')), 
   
 ]
 if settings.DEBUG:
