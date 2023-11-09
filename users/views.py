@@ -9,6 +9,9 @@ from station.models import Station
 from .decorator import active_and_role_required
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import user_passes_test
+
 import re
 @login_required
 def responsable_dashboard(request):
@@ -21,11 +24,11 @@ def responsable_dashboard(request):
     context = {
         'station': station,
     }
-    return render(request, 'dashboard/responsable_dashboard.html', context)
+    return render(request, 'dashboard/responsable_dashbord.html', context)
 
 def admin_dashboard(request):
     stations = Station.objects.all()  
-    return render(request, 'users/admin_dashboard.html', {'stations': stations})
+    return render(request, 'users/admin_dashbord.html', {'stations': stations})
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -33,18 +36,21 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            
+           
             if user.profile.is_admin:
-                return redirect('station:station_list')
+                return redirect('admin_dashbord')
             elif user.profile.is_responsable:
-                return redirect('/cuve')
+                return redirect('responsable_dashbard')
             elif user.profile.is_pompiste:
-                return redirect('pompe:pompe_list')
+                return redirect('pompiste_dashbord')
+            else:
+                # Handle other user types or no role assigned
+                return HttpResponse("Your account does not have access to any dashboard.")
         else:
-            
             return render(request, 'users/login.html', {'error': 'Invalid login'})
     else:
         return render(request, 'users/login.html')
+
 
 @login_required
 def user_logout(request):
@@ -87,7 +93,9 @@ def user_register(request):
         if User.objects.filter(username=username).exists():
             return render(request, 'users/register.html', {'error': 'Username already exists'})
 
-        user = User.objects.create(username=username)
+       
+        user = User.objects.create(username=username, is_active=False)
+
         user.set_password(password)
         user.save()
         Profile.objects.create(user=user, tel=tel, nom=nom, statut=statut, is_active=False)
@@ -97,35 +105,39 @@ def user_register(request):
         return render(request, 'users/register.html')
 
 @login_required
+@user_passes_test(lambda u: u.is_superuser)  # Make sure only superusers can activate users
+@login_required
 def admin_activate_user(request, user_id):
-    if not request.user.profile.is_admin:
-        return HttpResponse("Unauthorized", status=401)
-
-    try:
-        user_to_activate = User.objects.get(pk=user_id)
+    if request.user.profile.is_admin:
+        user_to_activate = get_object_or_404(User, pk=user_id)
+        user_to_activate.is_active = True
+        user_to_activate.save()
+        
         user_to_activate.profile.is_active = True
         user_to_activate.profile.save()
-    except User.DoesNotExist:
-        return HttpResponse("User does not exist.", status=404)
-
-    return redirect('admin_user_activation_list')
+        
+        return redirect('users/login')
+    else:
+        return HttpResponse("Unauthorized", status=403)
 
 @login_required
 def dashboard(request):
     if request.user.profile.is_admin:
         stations = Station.objects.all()
-        return render(request, 'dashboard/admin_dashboard.html', {'stations': stations})
+        inactive_users = User.objects.filter(is_active=False)
+        return render(request, 'users/admin_dashbord.html', {
+            'stations': stations,
+            'inactive_users': inactive_users
+        })
     elif request.user.profile.is_responsable and request.user.profile.is_active:
         try:
             station = request.user.managed_station.get()
         except Station.DoesNotExist:
             station = None
-        return render(request, 'dashboard/responsable_dashboard.html', {'station': station})
+        return render(request, 'users/responsable_dashbord.html', {'station': station})
     elif request.user.profile.is_pompiste and request.user.profile.is_active:
-        
-        return render(request, 'dashboard/pompiste_dashboard.html')
+        return render(request, 'users/pompiste_dashbord.html')
     else:
-       
         return HttpResponse("Your account is not activated or you do not have a role assigned.")
 
 @login_required
@@ -140,7 +152,7 @@ def responsable_dashboard(request):
     context = {
         'station': station,
     }
-    return render(request, 'dashboard/responsable_dashboard.html', context)
+    return render(request, 'users/responsable_dashbord.html', context)
 @login_required
 def some_view(request):
     if hasattr(request.user, 'profile') and request.user.profile.is_responsable:

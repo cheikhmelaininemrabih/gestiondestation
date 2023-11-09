@@ -11,10 +11,6 @@ def station_detail(request, pk):
     station = get_object_or_404(Station, pk=pk)  
     return render(request, 'stations/station_detail.html', {'station': station})
 
-def station_list(request):
-    station = Station.objects.all() 
-    return render(request, 'stations/station_list.html', {'station': station})
-
 class StationListView(ListView):
     model = Station
     template_name = 'station/station_list.html'
