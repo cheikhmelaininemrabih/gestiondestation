@@ -2,25 +2,12 @@
 <h2>Login</h2>
 <form method="post" action="{% url 'user_login' %}">
     {% csrf_token %}
-    Username: <input type="text" name="username"><br>
-    Password: <input type="password" name="password"><br>
+    Username (Email or Telephone): <input type="text" name="username" required><br>
+    Password: <input type="password" name="password" required><br>
     <input type="submit" value="Login">
     {% if error %}
         <p>{{ error }}</p>
     {% endif %}
 </form>
 
-<h2>Register</h2>
-<form method="post" action="{% url 'user_register' %}">
-    {% csrf_token %}
-    Username: <input type="text" name="username"><br>
-    Password: <input type="password" name="password"><br>
-    Confirm Password: <input type="password" name="password2"><br>
-    Role:
-    <select name="statut">
-        <option value="0">Admin</option>
-        <option value="1">Responsable</option>
-        <option value="2">Pompiste</option>
-    </select><br>
-    <input type="submit" value="Register">
-</form>
+<p>Don't have an account? <a href="{% url 'user_register' %}">Create an account</a>.</p>

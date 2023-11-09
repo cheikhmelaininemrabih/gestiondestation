@@ -1,39 +1,18 @@
-<!-- users/templates/users/register.html -->
 
-{% extends "base.html" %}  {# Change "base.html" to your base template if you have one #}
 
 {% block content %}
-  <h2>Register</h2>
-  <form method="post">
+ 
+<h2>Register</h2>
+<form method="post" action="{% url 'user_register' %}">
     {% csrf_token %}
-    <p>
-      <label for="id_username">Username:</label>
-      <input id="id_username" type="text" name="username" required>
+    Username (Email or Telephone): <input type="text" name="username" required><br>
+    Password: <input type="password" name="password" required><br>
+    Confirm Password: <input type="password" name="password2" required><br>
+    Name: <input type="text" name="nom" required><br>
+    Telephone: <input type="text" name="tel" required><br>
   
-    
-    <p>
-      <label for="id_password">Password:</label>
-      <input id="id_password" type="password" name="password" required>
-    </p>
-    <p>
-      <label for="id_password2">Confirm Password:</label>
-      <input id="id_password2" type="password" name="password2" required>
-    </p>
-    <p>
-      <label for="id_statut">Statut:</label>
-      <select id="id_statut" name="statut">
-        <select id="id_statut" name="statut">
-            <option value="0">Admin</option>
-            <option value="1">Responsable</option>
-            <option value="2">Pompiste</option>
-        </select>
-        
-      
-      </select>
-    </p>
-    <button type="submit">Register</button>
-  </form>
-
+    <input type="submit" value="Register">
+</form>
   {% if error %}
     <p style="color: red;">{{ error }}</p>
   {% endif %}

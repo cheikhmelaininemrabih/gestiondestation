@@ -14,7 +14,7 @@ class PompisteCreateView(CreateView):
     fields = ['Nom', 'Prenom', 'Adresse', 'tel', 'id_station']
 
     def get_success_url(self):
-        return reverse_lazy('pompiste_list')
+        return reverse_lazy('pompiste:pompiste_list')
 
 class PompisteUpdateView(UpdateView):
     model = Pompiste
@@ -22,7 +22,7 @@ class PompisteUpdateView(UpdateView):
     fields = ['Nom', 'Prenom', 'Adresse', 'tel', 'id_station']
 
     def get_success_url(self):
-        return reverse_lazy('pompiste_list')
+        return reverse_lazy('pompiste:pompiste_list')
 
 class PompisteDeleteView(DeleteView):
     model = Pompiste
@@ -30,4 +30,4 @@ class PompisteDeleteView(DeleteView):
     context_object_name = 'pompiste'
 
     def get_success_url(self):
-        return reverse_lazy('pompiste_list')
+        return reverse_lazy('pompiste:pompiste_list')

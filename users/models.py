@@ -5,7 +5,8 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     statut = models.IntegerField(default=0)
     nom = models.CharField(max_length=100)
-    # tel = models.CharField(max_length=20)
+    is_active = models.BooleanField(default=False)
+    tel = models.CharField(max_length=20)
 
     @property
     def is_admin(self):

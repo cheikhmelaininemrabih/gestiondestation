@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .models import Cuve
 def cuve_list(request):
-    cuves = Cuve.objects.all()  # You can apply filters or ordering here
+    cuves = Cuve.objects.all()  
     return render(request, 'cuve/cuve_list.html', {'cuves': cuves})
 class CuveListView(ListView):
     model = Cuve
