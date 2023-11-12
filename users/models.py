@@ -3,19 +3,20 @@ from django.db import models
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    statut = models.IntegerField(default=0)
-    nom = models.CharField(max_length=100)
-    is_active = models.BooleanField(default=False)
+    role_choices = [
+        ('admin', 'Admin'),
+        ('responsable', 'Responsable'),
+        ('pompiste', 'Pompiste'),
+    ]
+    role = models.CharField(max_length=20, choices=role_choices)
+
+    # Suppression des champs username, email et password car ils sont déjà inclus dans le modèle User
     tel = models.CharField(max_length=20)
 
-    @property
-    def is_admin(self):
-        return self.statut == 0
+    # Ce champ est inutile car l'email fait partie du modèle User
+    # email = models.EmailField(max_length=255)
 
-    @property
-    def is_responsable(self):
-        return self.statut == 1
+    is_active = models.BooleanField(default=False)
 
-    @property
-    def is_pompiste(self):
-        return self.statut == 2
+    def __str__(self):
+        return self.user.username

@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password
 from .models import Profile
@@ -14,174 +15,127 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 
 import re
-@login_required
-def responsable_dashboard(request):
-    
-    try:
-        station = request.user.managed_station.get()
-    except Station.DoesNotExist:
-        station = None
-
+@login_required(login_url='sing_in')
+def dashboard(request):
+    all_users = User.objects.filter(is_active=False)
     context = {
-        'station': station,
+        'all_users': all_users
     }
-    return render(request, 'dashboard/responsable_dashbord.html', context)
+    return render(request, 'users/admin_dashbord.html', context)
+def responsable_dashbord(request):
+    return render(request, 'users/responsable_dashbord.html')
 
-def admin_dashboard(request):
-    stations = Station.objects.all()  
-    return render(request, 'users/admin_dashbord.html', {'stations': stations})
-def user_login(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
+def pompiste_dashbord(request):
+    return render(request, 'users/pompiste_dashbord.html')
 
-        if user is not None:
-            login(request, user)
-            # Check user roles after successful login
-            if hasattr(user, 'profile'):
-                if user.profile.is_admin:
-                    return redirect('admin_dashbord')
-                elif user.profile.is_responsable:
-                    return redirect('responsable_dashbord')  # Corrected the spelling here
-                elif user.profile.is_pompiste:
+def sing_in(request):
+    if request.method == "POST":
+        email = request.POST.get('email', None)
+        password = request.POST.get('password', None)
+
+        user = User.objects.filter(email=email).first()
+        if user:
+            auth_user = authenticate(username=user.username, password=password)
+            if auth_user:
+                login(request, auth_user)
+                try:
+                    profile = Profile.objects.get(user=auth_user)
+                    role = profile.role
+                except Profile.DoesNotExist:
+                    print("Le profil de l'utilisateur n'existe pas")
+                    return redirect('login')
+
+                if role == 'admin':
+                    return redirect('dashboard')
+                elif role == 'responsable':
+                    return redirect('responsable_dashbord')
+                elif role == 'pompiste':
                     return redirect('pompiste_dashbord')
                 else:
-                    # Handle other user types or no role assigned
-                    return HttpResponse("Your account does not have access to any dashboard.")
+                    print("compte ne pas valide")
             else:
-                # Handle case where user does not have a profile
-                return HttpResponse("Your account does not have a profile associated with it.")
+                print("Mot de passe incorrect")
         else:
-            # Authentication failed
-            return render(request, 'users/login.html', {'error': 'Invalid login credentials.'})
-    else:
-        # GET request, show the login form
-        return render(request, 'users/login.html')
+            print("L'utilisateur n'existe pas")
 
+    return render(request, 'users/login.html', {})
 
-
-@login_required
-def user_logout(request):
-    logout(request)
-    return redirect('user_login')
-
-
-
-def user_register(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        password2 = request.POST.get('password2')
-        nom = request.POST.get('nom')
-        tel = request.POST.get('tel')
-        statut = int(request.POST.get('statut', '0'))
-
-       
+def sing_up(request):
+    error = False
+    message = ""
+    if request.method == "POST":
+        name = request.POST.get('name', None)
+        email = request.POST.get('email', None)
+        password = request.POST.get('password', None)
+        repassword = request.POST.get('repassword', None)
+        tel = request.POST.get('tel', None)
+        # Email
         try:
-            validate_email(username)
-            is_email = True
-        except ValidationError:
-            is_email = False
+            validate_email(email)
+        except:
+            error = True
+            message = "Enter un email valide svp!"
+        # password
+        if error == False:
+            if password != repassword:
+                error = True
+                message = "Les deux mot de passe ne correspondent pas!"
+        # Exist
+        user = User.objects.filter(Q(email=email) | Q(username=name)).first()
+        if user:
+            error = True
+            message = f"Un utilisateur avec email {email} ou le nom d'utilisateur {name} exist déjà'!"
 
-      
-        is_telephone = re.match(r'^\+?1?\d{9,15}$', username)
+        # register
+        if error == False:
+            user = User(
+                username=name,
+                email=email,
+            )
+            user.save()
 
-        if not is_email and not is_telephone:
-            return render(request, 'users/register.html', {'error': 'Enter a valid email or telephone number.'})
+            user.password = password
+            user.set_password(user.password)
+            user.is_active = False
+            user.save()
+            profile = Profile(user=user, tel=tel, role="None")
+            profile.save()
+            return redirect('sing_in')
+    context = {
+        'error': error,
+        'message': message
+    }
+    return render(request, 'users/register.html', context)
 
-        
-       
-
-        if not all([username, password, password2, tel, nom]):
-            return render(request, 'users/register.html', {'error': 'All fields are required.'})
-
-        if password != password2:
-            return render(request, 'users/register.html', {'error': 'Passwords do not match'})
-
-        if User.objects.filter(username=username).exists():
-            return render(request, 'users/register.html', {'error': 'Username already exists'})
-
-       
-        user = User.objects.create(username=username, is_active=False)
-
-        user.set_password(password)
-        user.save()
-        Profile.objects.create(user=user, tel=tel, nom=nom, statut=statut, is_active=False)
-
-        return redirect('user_login')
-    else:
-        return render(request, 'users/register.html')
 
 import logging
 
 logger = logging.getLogger(__name__)
+def activate_user(request, user_id):
+    user_to_activate = User.objects.get(pk=user_id)
 
-@login_required
-@user_passes_test(lambda u: u.is_superuser)
-def admin_activate_user(request, user_id):
-    try:
-        user_to_activate = get_object_or_404(User, pk=user_id)
-        user_to_activate.is_active = True
-        user_to_activate.save()
-        
-        if hasattr(user_to_activate, 'profile'):
-            user_to_activate.profile.is_active = True
-            user_to_activate.profile.save()
+    user_to_activate.is_active = True
+    user_to_activate.save()
+    profile, created = Profile.objects.get_or_create(user=user_to_activate)
+    profile.is_active = True
+    profile.save()
+    return redirect('dashboard')
 
-        messages.success(request, f'User {user_to_activate.username} has been activated successfully.')
-        return redirect('admin_dashbord')
-    except Exception as e:
-        logger.error(f"Error activating user: {e}")
-        messages.error(request, "There was an error activating the user.")
-        return redirect('admin_dashbord')
+def role_user(request, user_id):
+    user = User.objects.get(pk=user_id)
+    roles = ['admin', 'responsable', 'pompiste']
 
-
-@login_required
-def dashboard(request):
-    if request.user.profile.is_admin:
-        stations = Station.objects.all()
-        inactive_users = User.objects.filter(is_active=False)
-        print("Inactive Users:", inactive_users)  
-        return render(request, 'users/admin_dashbord.html', {
-            'stations': stations,
-            'inactive_users': inactive_users
-        })
-    elif request.user.profile.is_responsable and request.user.profile.is_active:
-        try:
-            station = request.user.managed_station.get()
-        except Station.DoesNotExist:
-            station = None
-        return render(request, 'users/responsable_dashbord.html', {'station': station})
-    elif request.user.profile.is_pompiste and request.user.profile.is_active:
-        return render(request, 'users/pompiste_dashbord.html')
-    else:
-        return HttpResponse("Your account is not activated or you do not have a role assigned.")
-
-@login_required
-@active_and_role_required('responsable')
-def responsable_dashboard(request):
-    try:
-       
-        station = request.user.profile.managed_station
-    except Station.DoesNotExist:
-        station = None
+    if request.method == 'POST':
+        selected_role = request.POST.get('selected_role')
+        if selected_role in roles:
+            profile, created = Profile.objects.get_or_create(user=user)
+            profile.role = selected_role
+            profile.save()
+            return redirect('dashboard')
 
     context = {
-        'station': station,
+        'user': user,
+        'roles': roles,
     }
-    return render(request, 'users/responsable_dashbord.html', context)
-@login_required
-def some_view(request):
-    if hasattr(request.user, 'profile') and request.user.profile.is_responsable:
-        
-        return HttpResponse("You are a responsable.")
-    else:
-        return HttpResponse("You are not authorized to view this page.")
-def admin_dashboard(request):
-    stations = Station.objects.all()
-    inactive_users = User.objects.filter(is_active=False)
-    return render(request, 'users/admin_dashbord.html', {
-        'stations': stations,
-        'inactive_users': inactive_users
-    })
+    return render(request, 'users/role_user.html', context)
+

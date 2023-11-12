@@ -1,8 +1,0 @@
-{% for user in inactive_users %}
-  <tr>
-    <td>{{ user.username }}</td>
-    <td>
-      <a href="{% url 'admin_activate_user' user.id %}">Activate</a>
-    </td>
-  </tr>
-{% endfor %}

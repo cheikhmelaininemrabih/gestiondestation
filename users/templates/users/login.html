@@ -1,13 +1,37 @@
-<!-- users/templates/users/login.html -->
-<h2>Login</h2>
-<form method="post" action="{% url 'user_login' %}">
-    {% csrf_token %}
-    Username (Email or Telephone): <input type="text" name="username" required><br>
-    Password: <input type="password" name="password" required><br>
-    <input type="submit" value="Login">
-    {% if error %}
-        <p>{{ error }}</p>
-    {% endif %}
-</form>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div class="card-body p-5">
+                  <h2 class="text-uppercase text-center mb-5">
+                    Login
+                  </h2>
 
-<p>Don't have an account? <a href="{% url 'user_register' %}">Create an account</a>.</p>
+                  <form  method="POST"  action="{% url 'sing_in' %}" >
+                    {% csrf_token %}
+                    <!-- Email input -->
+                    <div class="form-outline mb-4">
+                      <input type="email" id="form1Example1" class="form-control" name="email" required />
+                      <label class="form-label" for="form1Example1">Email address</label>
+                    </div>
+
+                    <!-- Password input -->
+                    <div class="form-outline mb-4">
+                      <input type="password" id="form1Example2" class="form-control" name="password" required />
+                      <label class="form-label" for="form1Example2">Password</label>
+                    </div>
+
+
+
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+                  </form>
+                </div>
+</body>
+</html>

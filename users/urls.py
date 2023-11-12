@@ -1,15 +1,16 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
+from .views import dashboard, sing_in, sing_up, activate_user, role_user, pompiste_dashbord, responsable_dashbord
 
 urlpatterns = [
-    path('login/', views.user_login, name='user_login'),
-    path('logout/', views.user_logout, name='user_logout'),
-    path('register/', views.user_register, name='user_register'),
-    
-    path('station/', views.admin_dashboard, name='admin_dashbord'),
-    path('responsable/', views.responsable_dashboard, name='responsable_dashbord'),
-    # path('pompe_list/', views.pompiste_dashboard, name='pompiste_dashboard'),
-    path('admin/activate_user/<int:user_id>/', views.admin_activate_user, name='admin_activate_user'),
-
-
+    path('', dashboard, name='dashboard'),
+    path('login/', sing_in, name='sing_in'),
+    path('register/', sing_up, name='sing_up'),
+    path('responsable_dashbord/', responsable_dashbord, name='responsable_dashbord'),
+    path('pompiste_dashbord/', pompiste_dashbord, name='pompiste_dashbord'),
+    path('activate_user/<int:user_id>/', activate_user, name='activate_user'),
+    path('role_user/<int:user_id>/', role_user, name='role_user'),
 ]  
+
