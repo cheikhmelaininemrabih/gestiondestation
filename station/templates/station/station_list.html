@@ -27,7 +27,10 @@
                     <td>{{ station.Nmbr_pompistes }}</td>
                     <td>
                         <a href="{% url 'station:station_update' station.pk %}">Edit</a>
-                        <a href="{% url 'station:station_delete' station.pk %}">Delete</a>
+                        <form action="{% url 'station:station_deactivate' station.pk %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit">Deactivate</button>
+                        </form>
                     </td>
                 </tr>
             {% endfor %}

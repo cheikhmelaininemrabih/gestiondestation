@@ -28,7 +28,9 @@
                 <td>{{ pompiste.id_station }}</td>
                 <td>
                     <a href="{% url 'pompiste:pompiste_update' pompiste.id %}">Edit</a> |
-                    <a href="{% url 'pompiste:pompiste_delete' pompiste.id %}">Delete</a>
+                    
+                    <a href="{% url 'pompiste:pompiste_deactivate' pompiste.id %}">Deactivate</a>
+
                 </td>
             </tr>
             {% endfor %}

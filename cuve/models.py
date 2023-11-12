@@ -6,6 +6,7 @@ class Cuve(models.Model):
     charge = models.DecimalField(max_digits=10, decimal_places=2)
     stocke = models.DecimalField(max_digits=10, decimal_places=2)
     Qt_min = models.DecimalField(max_digits=10, decimal_places=2)
+    is_active = models.BooleanField(default=True)
     id_station = models.ForeignKey(Station, on_delete=models.CASCADE)
 
     def __str__(self):

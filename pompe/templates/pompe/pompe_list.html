@@ -18,7 +18,7 @@
                 <th>ID</th>
                 <th>Type</th>
                 <th>Modèle</th>
-                <!-- Add other headers here if needed -->
+               
             </tr>
         </thead>
         <tbody>
@@ -27,12 +27,21 @@
                     <td>{{ pompe.id }}</td>
                     <td>{{ pompe.type }}</td>
                     <td>{{ pompe.modele }}</td>
-                    <!-- Add other pompe fields here if needed -->
+                  
                     <td>
-                        <!-- Assuming you have update and delete views for pompes -->
+                       
                         <a href="{% url 'pompe:pompe_update' pompe.pk %}">Edit</a>
-                        <a href="{% url 'pompe:pompe_delete' pompe.pk %}">Delete</a>
+                        <td>
+                            <!-- Other actions -->
+                            <form action="{% url 'pompe:pompe_deactivate' pompe.pk %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" style="background: none; border: none; padding: 0; color: blue; text-decoration: underline; cursor: pointer;">
+                                    Deactivate
+                                </button>
+                            </form>
+                        </td>
                     </td>
+                    
                 </tr>
             {% endfor %}
         </tbody>

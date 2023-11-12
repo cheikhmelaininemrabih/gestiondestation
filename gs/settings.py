@@ -97,16 +97,29 @@ TEMPLATES = [
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': 'DEBUG',  # You can change this to 'INFO' or 'ERROR' as needed
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
     },
     'loggers': {
-        'django.template': {
+        'django': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'DEBUG',  # Adjust the level as needed
+            'propagate': True,
+        },
+        # If you have a specific app you want to log, add it here
+        'users': {
+            'handlers': ['console'],
+            'level': 'DEBUG',  # Adjust the level as needed
             'propagate': True,
         },
     },
@@ -161,7 +174,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
+LOGIN_URL = 'user_login'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

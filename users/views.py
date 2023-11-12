@@ -10,6 +10,7 @@ from .decorator import active_and_role_required
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 
 import re
@@ -34,22 +35,30 @@ def user_login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
+
         if user is not None:
             login(request, user)
-           
-            if user.profile.is_admin:
-                return redirect('admin_dashbord')
-            elif user.profile.is_responsable:
-                return redirect('responsable_dashbard')
-            elif user.profile.is_pompiste:
-                return redirect('pompiste_dashbord')
+            # Check user roles after successful login
+            if hasattr(user, 'profile'):
+                if user.profile.is_admin:
+                    return redirect('admin_dashbord')
+                elif user.profile.is_responsable:
+                    return redirect('responsable_dashbord')  # Corrected the spelling here
+                elif user.profile.is_pompiste:
+                    return redirect('pompiste_dashbord')
+                else:
+                    # Handle other user types or no role assigned
+                    return HttpResponse("Your account does not have access to any dashboard.")
             else:
-                # Handle other user types or no role assigned
-                return HttpResponse("Your account does not have access to any dashboard.")
+                # Handle case where user does not have a profile
+                return HttpResponse("Your account does not have a profile associated with it.")
         else:
-            return render(request, 'users/login.html', {'error': 'Invalid login'})
+            # Authentication failed
+            return render(request, 'users/login.html', {'error': 'Invalid login credentials.'})
     else:
+        # GET request, show the login form
         return render(request, 'users/login.html')
+
 
 
 @login_required
@@ -104,27 +113,36 @@ def user_register(request):
     else:
         return render(request, 'users/register.html')
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 @login_required
-@user_passes_test(lambda u: u.is_superuser)  # Make sure only superusers can activate users
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def admin_activate_user(request, user_id):
-    if request.user.profile.is_admin:
+    try:
         user_to_activate = get_object_or_404(User, pk=user_id)
         user_to_activate.is_active = True
         user_to_activate.save()
         
-        user_to_activate.profile.is_active = True
-        user_to_activate.profile.save()
-        
-        return redirect('users/login')
-    else:
-        return HttpResponse("Unauthorized", status=403)
+        if hasattr(user_to_activate, 'profile'):
+            user_to_activate.profile.is_active = True
+            user_to_activate.profile.save()
+
+        messages.success(request, f'User {user_to_activate.username} has been activated successfully.')
+        return redirect('admin_dashbord')
+    except Exception as e:
+        logger.error(f"Error activating user: {e}")
+        messages.error(request, "There was an error activating the user.")
+        return redirect('admin_dashbord')
+
 
 @login_required
 def dashboard(request):
     if request.user.profile.is_admin:
         stations = Station.objects.all()
         inactive_users = User.objects.filter(is_active=False)
+        print("Inactive Users:", inactive_users)  
         return render(request, 'users/admin_dashbord.html', {
             'stations': stations,
             'inactive_users': inactive_users
@@ -160,3 +178,10 @@ def some_view(request):
         return HttpResponse("You are a responsable.")
     else:
         return HttpResponse("You are not authorized to view this page.")
+def admin_dashboard(request):
+    stations = Station.objects.all()
+    inactive_users = User.objects.filter(is_active=False)
+    return render(request, 'users/admin_dashbord.html', {
+        'stations': stations,
+        'inactive_users': inactive_users
+    })

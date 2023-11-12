@@ -2,9 +2,7 @@
   <tr>
     <td>{{ user.username }}</td>
     <td>
-      {% if not user.is_active %}
-        <a href="{% url 'admin_activate_user' user.id %}">Activate</a>
-      {% endif %}
+      <a href="{% url 'admin_activate_user' user.id %}">Activate</a>
     </td>
   </tr>
 {% endfor %}

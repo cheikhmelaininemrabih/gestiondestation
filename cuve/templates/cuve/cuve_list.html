@@ -27,7 +27,21 @@
                 <td>{{ cuve.id_station.libelle }}</td>
                 <td>
                     <a href="{% url 'cuve:cuve_update' cuve.pk %}">Edit</a>
-                    <a href="{% url 'cuve:cuve_delete' cuve.pk %}">Delete</a>
+                    {% for cuve in cuves %}
+                    {% if cuve.is_active %}
+                    <form action="{% url 'cuve:cuve_deactivate' cuve.pk %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit">Deactivate</button>
+                    </form>
+                {% else %}
+                    <form action="{% url 'cuve:cuve_reactivate' cuve.pk %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit">Reactivate</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
                 </td>
             </tr>
         {% endfor %}

@@ -4,7 +4,6 @@
 
 {% block content %}
 <h2>Station Dashboard</h2>
-<!-- ... other parts of your admin_dashboard.html ... -->
 
 <h2>Inactive Users</h2>
 <table>
@@ -13,22 +12,31 @@
     <th>Action</th>
   </tr>
   {% for user in inactive_users %}
-    <tr>
-      <td>{{ user.username }}</td>
-      <td>
-        <a href="{% url 'admin_activate_user' user.id %}">Activate</a>
-      </td>
-    </tr>
-  {% endfor %}
+  <tr>
+    <td>{{ user.username }}</td>
+    <td>
+      <a href="{% url 'admin_activate_user' user.id %}">Activate</a>
+    </td>
+  </tr>
+{% empty %}
+  <tr><td colspan="2">No inactive users.</td></tr>
+{% endfor %}
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+
 </table>
 
-<!-- ... rest of your admin_dashboard.html ... -->
-
-<ul>
+<!-- <ul>
     {% for station in stations %}
     <li>
         <a href="{% url 'station:station_detail' station.pk %}">{{ station.libelle }}</a>
     </li>
     {% endfor %}
 </ul>
-{% endblock %}
+{% endblock %} -->

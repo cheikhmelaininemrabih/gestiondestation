@@ -7,5 +7,6 @@ urlpatterns = [
     path('pompe_create/', views.PompeCreateView.as_view(), name='pompe_create'),
   
     path('pompe/<int:pk>/update/', views.PompeUpdateView.as_view(), name='pompe_update'),
-    path('pompe/<int:pk>/delete/', views.PompeDeleteView.as_view(), name='pompe_delete'),
+     path('pompe/<int:pk>/deactivate/', views.PompeDeactivateView.as_view(), name='pompe_deactivate'),
+      path('pompe/<int:pk>/reactivate/', views.PompeReactivateView.as_view(), name='cuve_reactivate'),
 ]

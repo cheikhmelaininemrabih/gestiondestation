@@ -1,6 +1,9 @@
 from django.urls import reverse_lazy
-from django.shortcuts import render
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.shortcuts import render, redirect
+from django.views.generic import ListView, CreateView, UpdateView
+from django.views import View
+
+
 from .models import Station
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
@@ -15,7 +18,8 @@ class StationListView(ListView):
     model = Station
     template_name = 'station/station_list.html'
     context_object_name = 'stations'
-
+    def get_queryset(self):
+        return Station.objects.filter(is_active=True)
 
 class StationCreateView(CreateView):
     model = Station
@@ -30,7 +34,9 @@ class StationUpdateView(UpdateView):
     success_url = reverse_lazy('station:station_list')
 
 
-class StationDeleteView(DeleteView):
-    model = Station
-    template_name = 'station/station_confirm_delete.html'
-    success_url = reverse_lazy('station:station_list')
+class StationDeactivateView(View):
+    def post(self, request, pk):
+        station = get_object_or_404(Station, pk=pk)
+        station.is_active = False
+        station.save()
+        return redirect(reverse_lazy('station:station_list'))
