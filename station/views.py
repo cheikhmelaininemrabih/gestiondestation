@@ -2,13 +2,16 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView, UpdateView
 from django.views import View
-
-
 from .models import Station
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
+from rest_framework import viewsets
+from .models import Station
+from .serializers import StationSerializer
 
-
+class StationViewSet(viewsets.ModelViewSet):
+    queryset = Station.objects.all()
+    serializer_class = StationSerializer
 
 def station_detail(request, pk):
     station = get_object_or_404(Station, pk=pk)  

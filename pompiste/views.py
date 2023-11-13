@@ -5,6 +5,13 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from .models import Pompiste
+from rest_framework import viewsets
+from .models import Pompiste
+from .serializers import PompisteSerializer
+
+class PompisteViewSet(viewsets.ModelViewSet):
+    queryset = Pompiste.objects.all()
+    serializer_class = PompisteSerializer
 
 class PompisteListView(ListView):
     model = Pompiste

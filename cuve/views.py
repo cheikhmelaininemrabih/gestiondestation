@@ -3,8 +3,14 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from .models import Cuve
 from django.contrib import messages
-
 from django.views.generic import ListView, CreateView, UpdateView
+from rest_framework import viewsets
+from .models import Cuve
+from .serializers import CuveSerializer
+
+class CuveViewSet(viewsets.ModelViewSet):
+    queryset = Cuve.objects.all()
+    serializer_class = CuveSerializer
 
 def cuve_list(request):
     cuves = Cuve.objects.all()  

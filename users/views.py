@@ -13,6 +13,14 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
+from rest_framework import viewsets
+from .models import Profile
+from .serializers import ProfileSerializer
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
 
 import re
 @login_required(login_url='sing_in')

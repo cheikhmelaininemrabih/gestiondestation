@@ -4,12 +4,14 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
+from django.urls import path, include
 
 
 
 
 urlpatterns = [
-    
+    path('api/', include('cuve.urls')),
+
     path('admin/', admin.site.urls),
     path('station/', include(('station.urls', 'station'), namespace='station')),
     path('cuve/', include(('cuve.urls', 'cuve'), namespace='cuve')),

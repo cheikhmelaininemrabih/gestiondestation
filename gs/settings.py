@@ -58,6 +58,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'vents.apps.VentsConfig',
     'pompe.apps.PompeConfig',
+    'rest_framework',
+    'corsheaders',
     'pompiste.apps.PompisteConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -71,10 +73,30 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "https://example.com",
+    "https://sub.example.com",
+    "http://localhost:8000",
+    "http://127.0.0.1:9000",
+]
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
 ]
 
 ROOT_URLCONF = 'gs.urls'
@@ -105,7 +127,7 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'DEBUG',  # You can change this to 'INFO' or 'ERROR' as needed
+            'level': 'INFO',  # You can change this to 'INFO' or 'ERROR' as needed
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
@@ -113,13 +135,13 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG',  # Adjust the level as needed
+            'level': 'INFO',  # Adjust the level as needed
             'propagate': True,
         },
         # If you have a specific app you want to log, add it here
         'users': {
             'handlers': ['console'],
-            'level': 'DEBUG',  # Adjust the level as needed
+            'level': 'INFO',  # Adjust the level as needed
             'propagate': True,
         },
     },
