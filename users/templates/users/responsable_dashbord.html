@@ -1,13 +1,19 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-</head>
-<body>
-<h1>bien responsable</h1>
-</body>
-</html>
+
+{% block content %}
+<div class="container">
+  <h1> Bonjour, Responsable </h1>
+
+  <h2>Vos Stations</h2>
+  {% if stations %}
+    <ul>
+      {% for station in stations %}
+        <li>
+          <a href="{% url 'station:station_detail' station.id %}">{{ station.libelle }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Aucune station trouvée.</p>
+  {% endif %}
+</div>
+{% endblock content %}

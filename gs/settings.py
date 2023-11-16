@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 # Load environment variables from a .env file
 load_dotenv()
 pymysql.version_info = (1, 4, 6, 'final', 0)
-pymysql.install_as_MySQLdb
+pymysql.install_as_MySQLdb()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'default-secret-key')
@@ -105,7 +105,7 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'DEBUG',  # You can change this to 'INFO' or 'ERROR' as needed
+            'level': 'INFO',  # You can change this to 'INFO' or 'ERROR' as needed
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
@@ -113,7 +113,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG',  # Adjust the level as needed
+            'level': 'INFO',  # Adjust the level as needed
             'propagate': True,
         },
         # If you have a specific app you want to log, add it here

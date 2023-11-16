@@ -1,4 +1,6 @@
+{% extends "base.html" %}
 
+{% block content %}
   <h2>All Users</h2>
   <table>
     <thead>
@@ -7,7 +9,6 @@
         <th>Email</th>
         <th>Action</th>
         <th>Role</th>
-        <!-- Ajoutez d'autres colonnes au besoin -->
       </tr>
     </thead>
     <tbody>
@@ -17,11 +18,13 @@
           <td>{{ user.email }}</td>
           <td><a href="{% url 'activate_user' user.id %}">Activate</a></td>
           <td><a href="{% url 'role_user' user.id %}">Role</a></td>
+          <!-- Add more actions like edit or delete -->
         </tr>
       {% empty %}
         <tr>
-          <td colspan="2">Aucun utilisateur.</td>
+          <td colspan="4">Aucun utilisateur.</td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
+{% endblock %}

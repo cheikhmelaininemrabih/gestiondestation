@@ -3,8 +3,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from .models import Cuve
 from django.contrib import messages
+from station.models import Station
 
 from django.views.generic import ListView, CreateView, UpdateView
+
+
 
 def cuve_list(request):
     cuves = Cuve.objects.all()  
@@ -21,6 +24,16 @@ class CuveCreateView(CreateView):
     template_name = 'cuve/cuve_form.html'
     fields = ['Nb_pmp_alimente', 'charge', 'stocke', 'Qt_min', 'id_station']
     success_url = reverse_lazy('cuve:cuve_list')
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        station_id = self.kwargs.get('station_id', None)
+        if station_id:
+            initial['id_station'] = station_id  # Set the default value for 'id_station' field
+        return initial
+
+    def get_success_url(self):
+        return reverse_lazy('cuve:cuve_list')
 
 class CuveUpdateView(UpdateView):
     model = Cuve

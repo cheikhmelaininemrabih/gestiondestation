@@ -1,5 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
+from pompe.models import Pompe
+from cuve.models import Cuve
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password
 from .models import Profile
@@ -16,14 +18,24 @@ from django.contrib.auth.decorators import user_passes_test
 
 import re
 @login_required(login_url='sing_in')
+
 def dashboard(request):
     all_users = User.objects.filter(is_active=False)
     context = {
         'all_users': all_users
     }
     return render(request, 'users/admin_dashbord.html', context)
+
+
 def responsable_dashbord(request):
-    return render(request, 'users/responsable_dashbord.html')
+    try:
+        profile = Profile.objects.get(user=request.user)
+        stations = Station.objects.filter(responsables=profile)
+    except Profile.DoesNotExist:
+        stations = None
+
+    context = {'stations': stations}
+    return render(request, 'users/responsable_dashbord.html', context)
 
 def pompiste_dashbord(request):
     return render(request, 'users/pompiste_dashbord.html')
@@ -138,4 +150,6 @@ def role_user(request, user_id):
         'roles': roles,
     }
     return render(request, 'users/role_user.html', context)
+
+
 
