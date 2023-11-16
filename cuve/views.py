@@ -6,6 +6,12 @@ from django.contrib import messages
 from station.models import Station
 
 from django.views.generic import ListView, CreateView, UpdateView
+from rest_framework import viewsets
+from .serializers import CuveSerializer
+
+class CuveViewSet(viewsets.ModelViewSet):
+    queryset = Cuve.objects.all()
+    serializer_class = CuveSerializer
 
 
 

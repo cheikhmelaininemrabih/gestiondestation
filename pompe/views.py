@@ -4,6 +4,13 @@ from django.contrib import messages
 from django.views import View
 from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from .models import Pompe
+from rest_framework import viewsets
+from .models import Pompe
+from .serializers import PompeSerializer
+
+class PompeViewSet(viewsets.ModelViewSet):
+    queryset = Pompe.objects.all()
+    serializer_class = PompeSerializer
 
 class PompeListView(ListView):
     model = Pompe

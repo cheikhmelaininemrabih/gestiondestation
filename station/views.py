@@ -2,6 +2,9 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView
 from django.views import View
+from django.contrib.auth.decorators import login_required
+from rest_framework import viewsets
+from .serializers import StationSerializer
 from .models import Station, Profile
 from django import forms
 from cuve.models import Cuve
@@ -25,6 +28,12 @@ class StationForm(forms.ModelForm):
         self.fields['responsables'].label = "Responsable"
 
 
+
+
+
+class StationViewSet(viewsets.ModelViewSet):
+    queryset = Station.objects.all()
+    serializer_class = StationSerializer
 
 def station_detail(request, pk):
     station = get_object_or_404(Station, pk=pk)
