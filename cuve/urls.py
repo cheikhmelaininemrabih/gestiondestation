@@ -7,6 +7,7 @@ from .views import (
     CuveListView,
     CuveCreateView,
     CuveUpdateView,
+    CuveListByStationView,
     
 )
 from rest_framework.routers import DefaultRouter
@@ -18,11 +19,15 @@ app_name = 'cuve.apps.CuveConfig'
 
 urlpatterns = [
     path('', CuveListView.as_view(), name='cuve_list'),
-    # path('create/', CuveCreateView.as_view(), name='cuve_create'),
+   
     path('create/<int:station_id>/', CuveCreateView.as_view(), name='cuve_create'),
+   
+   
 
     path('', include(router.urls)),
-    path('create/', CuveCreateView.as_view(), name='cuve_create'),
+    
+    path('list/station/<int:station_id>/', CuveListByStationView.as_view(), name='cuve_list_for_station'),
+    # path('create/', CuveCreateView.as_view(), name='cuve_create'),
     path('<int:pk>/update/', CuveUpdateView.as_view(), name='cuve_update'),
     path('cuve/<int:pk>/deactivate/', views.CuveDeactivateView.as_view(), name='cuve_deactivate'),
     path('cuve/<int:pk>/reactivate/', views.CuveReactivateView.as_view(), name='cuve_reactivate'),

@@ -4,7 +4,7 @@ from django.views import View
 from .models import Cuve
 from django.contrib import messages
 from station.models import Station
-
+from django.views.generic.edit import CreateView
 from django.views.generic import ListView, CreateView, UpdateView
 from rest_framework import viewsets
 from .serializers import CuveSerializer
@@ -12,6 +12,21 @@ from .serializers import CuveSerializer
 class CuveViewSet(viewsets.ModelViewSet):
     queryset = Cuve.objects.all()
     serializer_class = CuveSerializer
+
+class CuveListByStationView(ListView):
+    model = Cuve
+    template_name = 'cuve/cuve_list.html'
+    context_object_name = 'cuves'
+
+    def get_queryset(self):
+        station_id = self.kwargs.get('station_id')
+        return Cuve.objects.filter(id_station_id=station_id)
+    
+    def get_context_data(self, **kwargs):
+        context = super(CuveListByStationView, self).get_context_data(**kwargs)
+        context['station_id'] = self.kwargs['station_id']  # Pass the station ID to the template
+        return context
+    
 
 
 
@@ -25,21 +40,26 @@ class CuveListView(ListView):
     def get_queryset(self):
         return Cuve.objects.all()
 
+
+
 class CuveCreateView(CreateView):
-    model = Cuve
+    model = Cuve  # Ensure this line is correct and 'Cuve' is properly imported
     template_name = 'cuve/cuve_form.html'
     fields = ['Nb_pmp_alimente', 'charge', 'stocke', 'Qt_min', 'id_station']
-    success_url = reverse_lazy('cuve:cuve_list')
-    
-    def get_initial(self):
-        initial = super().get_initial()
-        station_id = self.kwargs.get('station_id', None)
-        if station_id:
-            initial['id_station'] = station_id  # Set the default value for 'id_station' field
-        return initial
+
+    def form_valid(self, form):
+        # Convert the 'station_id' URL parameter to an actual Station instance
+        station_id = self.kwargs.get('station_id')
+        form.instance.id_station = get_object_or_404(Station, pk=station_id)
+        return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('cuve:cuve_list')
+        # Redirect to the cuve list for the specific station
+        station_id = self.object.id_station.id
+        return reverse_lazy('cuve:cuve_list_for_station', kwargs={'station_id': station_id})
+
+
+
 
 class CuveUpdateView(UpdateView):
     model = Cuve
