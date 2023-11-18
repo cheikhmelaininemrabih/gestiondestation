@@ -1,12 +1,31 @@
 
-
-{% extends 'base.html' %}
-
 {% block content %}
-<h2>Station libelle: {{ station.libelle }}</h2>
-<p>Location: {{ station.location }}</p>
-<p>nomber des cuves: {{ station.Nmbr_cuves }}</p>
-<p>nombre des pompes: {{ station.Nmbr_pompes }}</p>
-<p>Nomber des pompistes: {{ station.Nmbr_pompistes }}</p>
+<div class="container">
+  <h1>Station: {{ station.libelle }}</h1>
 
-{% endblock %}
+
+    <li><a href="{% url 'cuve:cuve_create' station_id %}">Add Cuve to {{ station.libelle}}</a></li>
+    <li><a href="{% url 'pompe:pompe_create' station_id %}">Add Pompe to {{ station.libelle}}</a></li>
+    <li><a href="{% url 'pompiste:pompiste_create' station_id %}">Add Pompiste to {{ station.libelle}}</a></li>
+
+
+
+  <h2>Cuves</h2>
+  {% for cuve in cuves %}
+    <div>
+      <p>Cuve: {{ cuve.id }} - Charge: {{ cuve.charge }} - Stocke: {{ cuve.stocke }}</p>
+    </div>
+  {% empty %}
+    <p>Aucune cuve trouvée pour cette station.</p>
+  {% endfor %}
+
+  <h2>Pompes</h2>
+  {% for pompe in pompes %}
+    <div>
+      <p>Pompe: {{ pompe.id }} - Type: {{ pompe.type }}</p>
+    </div>
+  {% empty %}
+    <p>Aucune pompe trouvée pour cette station.</p>
+  {% endfor %}
+</div>
+{% endblock content %}

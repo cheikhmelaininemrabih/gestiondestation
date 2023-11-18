@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 # Load environment variables from a .env file
 load_dotenv()
 pymysql.version_info = (1, 4, 6, 'final', 0)
-pymysql.install_as_MySQLdb
+pymysql.install_as_MySQLdb()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'default-secret-key')

@@ -5,7 +5,7 @@ class Pompe(models.Model):
     type = models.CharField(max_length=100)
     model = models.CharField(max_length=100)
     id_cuve = models.ForeignKey('cuve.Cuve', on_delete=models.CASCADE)  
-    id_pompiste = models.ForeignKey('pompiste.Pompiste', on_delete=models.CASCADE) 
     is_active = models.BooleanField(default=True)
+    id_pompiste = models.ForeignKey('pompiste.Pompiste', on_delete=models.CASCADE, related_name='pompes' , null=True , blank=True )
     def __str__(self):
         return f"Pompe {self.id} - {self.type}"
