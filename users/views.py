@@ -4,6 +4,9 @@ from pompe.models import Pompe
 from cuve.models import Cuve
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password
+from pompiste.models import Pompiste
+
+import station
 from .models import Profile
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -18,6 +21,7 @@ from django.contrib.auth.decorators import user_passes_test
 from rest_framework import viewsets
 from .models import Profile
 from .serializers import ProfileSerializer
+from django.http import JsonResponse
 
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
@@ -26,11 +30,22 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 import re
 @login_required(login_url='sing_in')
-
 def dashboard(request):
-    all_users = User.objects.filter(is_active=False)
+    # Fetch only inactive users
+    all_users = User.objects.all()  # Fetch all users
+    inactive_users = User.objects.filter(is_active=False)  # Fetch only inactive users
+    all_stations = Station.objects.all()
+    all_pompistes = Pompiste.objects.all()
+    all_pompes = Pompe.objects.all() 
+    all_cuves = Cuve.objects.all()
+
     context = {
-        'all_users': all_users
+        'all_users': all_users,
+        'inactive_users': inactive_users,  # Add this to your context
+        'all_stations': all_stations,
+        'all_pompistes': all_pompistes,
+        'all_pompes': all_pompes,
+        'all_cuves': all_cuves,
     }
     return render(request, 'users/admin_dashbord.html', context)
 
@@ -60,24 +75,23 @@ def sing_in(request):
                 login(request, auth_user)
                 try:
                     profile = Profile.objects.get(user=auth_user)
-                    role = profile.role
+                    # Redirect to the URL name, not the HTML file
+                    if profile.role == 'admin':
+                        return redirect('dashboard')  # URL name for admin dashboard
+                    elif profile.role == 'responsable':
+                        return redirect('responsable_dashbord')  # URL name for responsable dashboard
+                    elif profile.role == 'pompiste':
+                        return redirect('pompiste_dashbord')  # URL name for pompiste dashboard
+                    else:
+                        messages.error(request, "Your account doesn't have a role assigned. Please contact admin.")
+                        return redirect('sing_in')
                 except Profile.DoesNotExist:
-                    print("Le profil de l'utilisateur n'existe pas")
-                    return redirect('login')
-
-                if role == 'admin':
-                    return redirect('dashboard')
-                elif role == 'responsable':
-                    return redirect('responsable_dashbord')
-                elif role == 'pompiste':
-                    return redirect('pompiste_dashbord')
-                else:
-                    print("compte ne pas valide")
+                    messages.error(request, "Your profile does not exist. Please contact admin.")
+                    return redirect('sing_in')
             else:
-                print("Mot de passe incorrect")
+                messages.error(request, "Your username and/or password were incorrect.")
         else:
-            print("L'utilisateur n'existe pas")
-
+            messages.error(request, "The user does not exist.")
     return render(request, 'users/login.html', {})
 
 def sing_up(request):
