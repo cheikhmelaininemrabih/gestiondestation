@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Head content here -->
+</head>
+<body>
+    <div class="container">
+        <h1>Ajouter une Pompe à la Station</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="cuve">Cuve:</label>
+                <select name="cuve" id="cuve" class="form-control">
+                    {% for cuve in cuves %}
+                        <option value="{{ cuve.id }}">{{ cuve }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="type">Type:</label>
+                <select name="type" id="type" class="form-control">
+                    <option value="gasoil">Gasoil</option>
+                    <option value="essence">Essence</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Ajouter Pompe</button>
+        </form>
+    </div>
+</body>
+</html>

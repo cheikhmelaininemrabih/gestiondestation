@@ -1,50 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrateur</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+      function confirmLogout() {
+          return confirm('Are you sure you want to log out?');
+      }
+    </script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Dashboard Administrateur</h1>
+
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link" href="#stations">Liste des Stations</a></li>
+                <li class="nav-item"><a class="nav-link" href="#gestion-utilisateurs">Gestion des Utilisateurs</a></li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}" onclick="return confirmLogout();">Déconnexion</a></li>
+            </ul>
+        </nav>
+
+        {% block content %}
+            <!-- Section for Stations -->
+            <h2 id="stations">Gestion des Stations</h2>
+            <a href="{% url 'station:station_create' %}" class="btn btn-primary mb-3">Ajouter une Station</a> <!-- Add Station link -->
+            {% if all_stations %}
+                <ul>
+                    {% for station in all_stations %}
+                        <li>
+                            <a href="{% url 'station:station_detail' station.id %}">{{ station.libelle }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Aucune station trouvée.</p>
+            {% endif %}
+
+            <!-- Section for User Management -->
+            <h2 id="gestion-utilisateurs">Gestion des Utilisateurs</h2>
+            <a class="nav-link" href="{% url 'admin_sing_up' %}">Ajouter un Utilisateur</a>
 
 
-{% block content %}
-  <h2>Inactive Users</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Username</th>
-        <th>Email</th>
-        <th>Action</th>
-        <th>Role</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for user in inactive_users %}
-        <tr>
-          <td>{{ user.username }}</td>
-          <td>{{ user.email }}</td>
-          <td><a href="{% url 'activate_user' user.id %}">Activate</a></td>
-          <td><a href="{% url 'role_user' user.id %}">Role</a></td>
-          <!-- Add more actions like edit or delete -->
-        </tr>
-      {% empty %}
-        <tr>
-          <td colspan="4">Aucun utilisateur inactif.</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+            <h3>Utilisateurs Inactifs</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nom d'utilisateur</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in inactive_users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                <a href="{% url 'activate_user' user.id %}" class="btn btn-primary btn-sm">Activer</a>
+                                <a href="{% url 'role_user' user.id %}" class="btn btn-secondary btn-sm">Assigner un rôle</a>
+                                <a href="{% url 'modify_user' user.id %}" class="btn btn-info btn-sm">Modifier</a>
+                                <a href="{% url 'delete_user' user.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">Supprimer</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3">Aucun utilisateur inactif.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
 
-  <!-- ... Rest of your template content for stations, pompistes, etc. ... -->
+            <h3>Liste des Utilisateurs Actifs</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nom d'utilisateur</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Rôle</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in all_users %}
+                        {% if user.is_active %}
+                            <tr>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.profile.tel }}</td>
+                                <td>{{ user.profile.role }}</td>
+                                <td>
+                                    <a href="{% url 'role_user' user.id %}" class="btn btn-secondary btn-sm">Attribuer un rôle</a>
+                                    <a href="{% url 'modify_user' user.id %}" class="btn btn-info btn-sm">Modifier</a>
+                                    <a href="{% url 'delete_user' user.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">Supprimer</a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">Aucun utilisateur actif trouvé.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endblock %}
+    </div>
 
-
-
-    <!-- Section for Stations -->
-    <h2>All Stations</h2>
-    {% if all_stations %}
-      <ul>
-        {% for station in all_stations %}
-          <li>
-            <a href="{% url 'station:station_detail' station.id %}">{{ station.libelle }}</a>
-            <!-- Here you can add more actions for each station like edit, deactivate etc. -->
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>No stations found.</p>
-    {% endif %}
-  </div>
-{% endblock %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

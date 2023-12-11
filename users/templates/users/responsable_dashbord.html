@@ -1,19 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsable Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Add other head elements here if necessary -->
+</head>
+<body>
+    <div class="container mt-4">
+        {% block content %}
+            <h1 class="mb-4 text-center">Bonjour, Responsable</h1>
 
-{% block content %}
-<div class="container">
-  <h1> Bonjour, Responsable </h1>
+            <!-- Section for Editing Account -->
+            <div class="mb-4">
+                <h2>Modifier Mon Compte</h2>
+                <a href="{% url 'modify_user' request.user.id %}" class="btn btn-info">Modifier Mon Compte</a>
+            </div>
+            <div class="mb-4 text-right">
+              <a href="{% url 'logout' %}" class="btn btn-danger">Déconnexion</a>
+          </div>
 
-  <h2>Vos Stations</h2>
-  {% if stations %}
-    <ul>
-      {% for station in stations %}
-        <li>
-          <a href="{% url 'station:station_detail' station.id %}">{{ station.libelle }}</a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>Aucune station trouvée.</p>
-  {% endif %}
-</div>
-{% endblock content %}
+            <!-- Section for Stations -->
+            <div>
+              <h2>Vos Stations</h2>
+              {% if stations %}
+                  {% for station in stations %}
+                      <div class="card mb-3">
+                          <div class="card-header">
+                              Station: {{ station.libelle }}
+                          </div>
+                          <div class="card-body">
+                              <!-- List of Pompistes in the Station -->
+                              <h3>Pompistes dans la Station</h3>
+                              <ul>
+                                  {% for pompiste in station.pompistes %}
+                                      <li>{{ pompiste.user.username }} - {{ pompiste.user.email }}
+                                          <ul>
+                                              {% for pompe in pompiste.pompes %}
+                                                  <li>{{ pompe.nom }}</li>
+                                              {% empty %}
+                                                  <li>Aucune pompe assignée</li>
+                                              {% endfor %}
+                                          </ul>
+                                      </li>
+                                  {% empty %}
+                                      <p>Aucun pompiste trouvé.</p>
+                                  {% endfor %}
+                              </ul>
+                              <a href="{% url 'assign_pompiste_to_station' station.id %}" class="btn btn-primary">Assigner Pompiste</a>
+
+                              <!-- List of Cuves in the Station -->
+                              <h3>Cuves dans la Station</h3>
+                              <ul>
+                                  {% for cuve in station.cuves %}
+                                      <li>{{ cuve.nom }}
+                                          <ul>
+                                              {% for pompe in cuve.pompes %}
+                                                  <li>{{ pompe.nom }}</li>
+                                              {% empty %}
+                                                  <li>Aucune pompe activée</li>
+                                              {% endfor %}
+                                          </ul>
+                                      </li>
+                                  {% empty %}
+                                      <p>Aucune cuve trouvée.</p>
+                                  {% endfor %}
+                              </ul>
+                              <a href="{% url 'add_cuve_to_station' station.id %}" class="btn btn-primary">Ajouter Cuve</a>
+
+                              <!-- List of Pompes in the Station -->
+                              <h3>Pompes dans la Station</h3>
+                              <ul>
+                                  {% for pompe in station.pompes %}
+                                      <li>{{ pompe.nom }} - Cuve activée: {{ pompe.cuve.nom|default:"Non assignée" }}</li>
+                                  {% empty %}
+                                      <p>Aucune pompe trouvée.</p>
+                                  {% endfor %}
+                              </ul>
+                              <a href="{% url 'add_pompe_to_station' station.id %}" class="btn btn-primary">Ajouter Pompe</a>
+                          </div>
+                      </div>
+                  {% endfor %}
+              {% else %}
+                  <p>Aucune station trouvée.</p>
+              {% endif %}
+          </div>
+      {% endblock content %}
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -27,5 +27,13 @@
   {% empty %}
     <p>Aucune pompe trouvée pour cette station.</p>
   {% endfor %}
+  <h2>Pompistes</h2>
+  {% for pompiste in pompistes %}
+    <div>
+      <p>Pompiste: {{ pompiste.id }} - Type: {{ pompiste.type }}</p>
+    </div>
+  {% empty %}
+    <p>Aucune pompiste trouvée pour cette station.</p>
+  {% endfor %}
 </div>
 {% endblock content %}

@@ -1,0 +1,23 @@
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Ajouter une Cuve à la Station {{ station.libelle }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="charge">Charge:</label>
+            <input type="number" class="form-control" id="charge" name="charge" step="any" required>
+        </div>
+        <div class="form-group">
+            <label for="stocke">Stocke:</label>
+            <input type="number" class="form-control" id="stocke" name="stocke" step="any" required>
+        </div>
+        <div class="form-group">
+            <label for="Qt_min">Quantité Minimale:</label>
+            <input type="number" class="form-control" id="Qt_min" name="Qt_min" step="any" required>
+        </div>
+        <!-- Add more fields as necessary -->
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+    </form>
+</div>
+{% endblock content %}
