@@ -1,25 +1,25 @@
 <!-- users/all_users_table.html -->
 
-  <h2>All Users</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Username</th>
-        <th>Email</th>
-        <!-- Ajoutez d'autres colonnes au besoin -->
-      </tr>
-    </thead>
-    <tbody>
-      {% for user in all_users %}
-        <tr>
-          <td>{{ user.username }}</td>
-          <td>{{ user.email }}</td>
-          <!-- Ajoutez d'autres colonnes au besoin -->
-        </tr>
-      {% empty %}
-        <tr>
-          <td colspan="2">Aucun utilisateur.</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<h2>All Users</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <!-- Ajoutez d'autres colonnes au besoin -->
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in all_users %}
+    <tr>
+      <td>{{ user.username }}</td>
+      <td>{{ user.email }}</td>
+      <!-- Ajoutez d'autres colonnes au besoin -->
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="2">Aucun utilisateur.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

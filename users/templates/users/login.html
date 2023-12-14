@@ -1,40 +1,58 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
-    
+
     <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <div class="card-body p-5">
-        <h2 class="text-uppercase text-center mb-5">Login</h2>
+      <h2 class="text-uppercase text-center mb-5">Login</h2>
 
-        <form method="POST" action="{% url 'sing_in' %}">
-            {% csrf_token %}
-            <!-- Email input -->
-            <div class="form-outline mb-4">
-                <input type="email" id="form1Example1" class="form-control" name="email" required />
-                <label class="form-label" for="form1Example1">Email address</label>
-            </div>
+      <form method="POST" action="{% url 'sing_in' %}">
+        {% csrf_token %}
+        <!-- Email input -->
+        <div class="form-outline mb-4">
+          <input
+            type="email"
+            id="form1Example1"
+            class="form-control"
+            name="email"
+            required
+          />
+          <label class="form-label" for="form1Example1">Email address</label>
+        </div>
 
-            <!-- Password input -->
-            <div class="form-outline mb-4">
-                <input type="password" id="form1Example2" class="form-control" name="password" required />
-                <label class="form-label" for="form1Example2">Password</label>
-            </div>
+        <!-- Password input -->
+        <div class="form-outline mb-4">
+          <input
+            type="password"
+            id="form1Example2"
+            class="form-control"
+            name="password"
+            required
+          />
+          <label class="form-label" for="form1Example2">Password</label>
+        </div>
 
-            <!-- Submit button -->
-            <button type="submit" class="btn btn-primary btn-block">Sign in</button>
-        </form>
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+      </form>
     </div>
 
     <!-- Bootstrap JS, Popper.js, and jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+  </body>
 </html>

@@ -43,18 +43,18 @@ class CuveListView(ListView):
 
 
 class CuveCreateView(CreateView):
-    model = Cuve  # Ensure this line is correct and 'Cuve' is properly imported
+    model = Cuve 
     template_name = 'cuve/cuve_form.html'
     fields = ['Nb_pmp_alimente', 'charge', 'stocke', 'Qt_min', 'id_station']
 
     def form_valid(self, form):
-        # Convert the 'station_id' URL parameter to an actual Station instance
+      
         station_id = self.kwargs.get('station_id')
         form.instance.id_station = get_object_or_404(Station, pk=station_id)
         return super().form_valid(form)
 
     def get_success_url(self):
-        # Redirect to the cuve list for the specific station
+        
         station_id = self.object.id_station.id
         return reverse_lazy('cuve:cuve_list_for_station', kwargs={'station_id': station_id})
 

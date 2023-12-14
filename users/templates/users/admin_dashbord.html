@@ -1,119 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard Administrateur</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <script>
       function confirmLogout() {
-          return confirm('Are you sure you want to log out?');
+        return confirm("Are you sure you want to log out?");
       }
     </script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container mt-4">
-        <h1>Dashboard Administrateur</h1>
+      <h1>Dashboard Administrateur</h1>
 
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item"><a class="nav-link" href="#stations">Liste des Stations</a></li>
-                <li class="nav-item"><a class="nav-link" href="#gestion-utilisateurs">Gestion des Utilisateurs</a></li>
-            </ul>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}" onclick="return confirmLogout();">Déconnexion</a></li>
-            </ul>
-        </nav>
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#stations">Liste des Stations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#gestion-utilisateurs"
+              >Gestion des Utilisateurs</a
+            >
+          </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="{% url 'logout' %}"
+              onclick="return confirmLogout();"
+              >Déconnexion</a
+            >
+          </li>
+        </ul>
+      </nav>
+      {% block content %}
+      <!-- Section for Stations -->
+      <h2 id="stations">Gestion des Stations</h2>
+      <a href="{% url 'station:station_create' %}" class="btn btn-primary mb-3">Ajouter une Station</a>
+      
+      <!-- Station Table -->
+      {% if all_stations %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Libelle</th>
+            <th>Location</th>
+            <th>Nombre de Cuves</th>
+            <th>Nombre de Pompes</th>
+            <th>Nombre de Pompistes</th>
+            <th>Responsable</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for station in all_stations %}
+          <tr>
+            <td>{{ station.libelle }}</td>
+            <td>{{ station.location }}</td>
+            <td>{{ station.Nmbr_cuves }}</td>
+            <td>{{ station.Nmbr_pompes }}</td>
+            <td>{{ station.Nmbr_pompistes }}</td>
+           
+            <td>
+              {% for responsable in station.responsables.all %}
+                {{ responsable }}{% if not forloop.last %}, {% endif %}
+              
+            </td>
+            <td>
+                <a href="{% url 'station:station_update' station.pk %}">Edit</a>
+                <form action="{% url 'station:station_deactivate' station.pk %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit">Deactivate</button>
+                </form>
+                
+            </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>Aucune station trouvée.</p>
+      {% endif %}
+    
+      
+      <!-- Section for User Management -->
+      <h2 id="gestion-utilisateurs">Gestion des Utilisateurs</h2>
+      <a class="nav-link" href="{% url 'admin_sing_up' %}"
+        >Ajouter un Utilisateur</a
+      >
 
-        {% block content %}
-            <!-- Section for Stations -->
-            <h2 id="stations">Gestion des Stations</h2>
-            <a href="{% url 'station:station_create' %}" class="btn btn-primary mb-3">Ajouter une Station</a> <!-- Add Station link -->
-            {% if all_stations %}
-                <ul>
-                    {% for station in all_stations %}
-                        <li>
-                            <a href="{% url 'station:station_detail' station.id %}">{{ station.libelle }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>Aucune station trouvée.</p>
-            {% endif %}
+      <h3>Utilisateurs Inactifs</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nom d'utilisateur</th>
+            <th>Email</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in inactive_users %}
+          <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <a
+                href="{% url 'activate_user' user.id %}"
+                class="btn btn-primary btn-sm"
+                >Activer</a
+              >
+              <a
+                href="{% url 'role_user' user.id %}"
+                class="btn btn-secondary btn-sm"
+                >Assigner un rôle</a
+              >
+              <a
+                href="{% url 'modify_user' user.id %}"
+                class="btn btn-info btn-sm"
+                >Modifier</a
+              >
+              <a
+                href="{% url 'delete_user' user.id %}"
+                class="btn btn-danger btn-sm"
+                onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');"
+                >Supprimer</a
+              >
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3">Aucun utilisateur inactif.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
 
-            <!-- Section for User Management -->
-            <h2 id="gestion-utilisateurs">Gestion des Utilisateurs</h2>
-            <a class="nav-link" href="{% url 'admin_sing_up' %}">Ajouter un Utilisateur</a>
-
-
-            <h3>Utilisateurs Inactifs</h3>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Nom d'utilisateur</th>
-                        <th>Email</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in inactive_users %}
-                        <tr>
-                            <td>{{ user.username }}</td>
-                            <td>{{ user.email }}</td>
-                            <td>
-                                <a href="{% url 'activate_user' user.id %}" class="btn btn-primary btn-sm">Activer</a>
-                                <a href="{% url 'role_user' user.id %}" class="btn btn-secondary btn-sm">Assigner un rôle</a>
-                                <a href="{% url 'modify_user' user.id %}" class="btn btn-info btn-sm">Modifier</a>
-                                <a href="{% url 'delete_user' user.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">Supprimer</a>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="3">Aucun utilisateur inactif.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-            <h3>Liste des Utilisateurs Actifs</h3>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Nom d'utilisateur</th>
-                        <th>Email</th>
-                        <th>Téléphone</th>
-                        <th>Rôle</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in all_users %}
-                        {% if user.is_active %}
-                            <tr>
-                                <td>{{ user.username }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.profile.tel }}</td>
-                                <td>{{ user.profile.role }}</td>
-                                <td>
-                                    <a href="{% url 'role_user' user.id %}" class="btn btn-secondary btn-sm">Attribuer un rôle</a>
-                                    <a href="{% url 'modify_user' user.id %}" class="btn btn-info btn-sm">Modifier</a>
-                                    <a href="{% url 'delete_user' user.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">Supprimer</a>
-                                </td>
-                            </tr>
-                        {% endif %}
-                    {% empty %}
-                        <tr>
-                            <td colspan="5">Aucun utilisateur actif trouvé.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endblock %}
+      <h3>Liste des Utilisateurs Actifs</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nom d'utilisateur</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Rôle</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in all_users %} {% if user.is_active %}
+          <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.profile.tel }}</td>
+            <td>{{ user.profile.role }}</td>
+            <td>
+              <a
+                href="{% url 'role_user' user.id %}"
+                class="btn btn-secondary btn-sm"
+                >Attribuer un rôle</a
+              >
+              <a
+                href="{% url 'modify_user' user.id %}"
+                class="btn btn-info btn-sm"
+                >Modifier</a
+              >
+              <a
+                href="{% url 'delete_user' user.id %}"
+                class="btn btn-danger btn-sm"
+                onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');"
+                >Supprimer</a
+              >
+            </td>
+          </tr>
+          {% endif %} {% empty %}
+          <tr>
+            <td colspan="5">Aucun utilisateur actif trouvé.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endblock %}
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+  </body>
 </html>

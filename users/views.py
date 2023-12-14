@@ -24,6 +24,11 @@ from .models import Profile
 from .serializers import ProfileSerializer
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from rest_framework.authtoken.models import Token
+from rest_framework import status
 
 
 import re
@@ -96,23 +101,23 @@ def add_pompe_to_station(request, station_id):
         type = request.POST.get('type')
         cuve = Cuve.objects.get(pk=cuve_id)
         pompe = Pompe.objects.create(type=type, id_cuve=cuve)
-        return redirect('users:responsable_dashbord')  # Adjust the redirect as needed
+        return redirect('users:responsable_dashbord')  
 
     return render(request, 'users/responsable_dashbord.html', {'cuves': cuves, 'station_id': station_id})
+
 
 def add_cuve_to_station(request, station_id):
     station = get_object_or_404(Station, id=station_id)
     if request.method == 'POST':
-        # Create a new Cuve instance
         cuve = Cuve()
         cuve.charge = request.POST.get('charge')
         cuve.stocke = request.POST.get('stocke')
         cuve.Qt_min = request.POST.get('Qt_min')
         cuve.id_station = station
-        # Add any other fields you need to set
+        
         cuve.save()
-        return redirect('users:responsable_dashbord')
-    return render(request, 'users/responsable_dashbord.html', {'station': station})
+        return redirect('responsable_dashbord')
+    return render(request, 'add_cuve_to_station', {'station': station})
 def responsable_dashbord(request):
     try:
         profile = Profile.objects.get(user=request.user)
@@ -139,38 +144,50 @@ def responsable_dashbord(request):
 
 def pompiste_dashbord(request):
     return render(request, 'users/pompiste_dashbord.html')
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
+import requests
 
 def sing_in(request):
     if request.method == "POST":
         email = request.POST.get('email', None)
         password = request.POST.get('password', None)
 
-        user = User.objects.filter(email=email).first()
-        if user:
-            auth_user = authenticate(username=user.username, password=password)
-            if auth_user:
-                login(request, auth_user)
-                try:
-                    profile = Profile.objects.get(user=auth_user)
-                    # Redirect to the URL name, not the HTML file
-                    if profile.role == 'admin':
-                        return redirect('dashboard')  # URL name for admin dashboard
-                    elif profile.role == 'responsable':
-                        return redirect('responsable_dashbord')  # URL name for responsable dashboard
-                    elif profile.role == 'pompiste':
-                        return redirect('pompiste_dashbord')  # URL name for pompiste dashboard
-                    else:
-                        messages.error(request, "Your account doesn't have a role assigned. Please contact admin.")
-                        return redirect('sing_in')
-                except Profile.DoesNotExist:
-                    messages.error(request, "Your profile does not exist. Please contact admin.")
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            login(request, user)
+            try:
+                profile = Profile.objects.get(user=user)
+                if profile.role == 'admin':
+                    return redirect('dashboard')
+                elif profile.role == 'responsable':
+                    return redirect('responsable_dashbord')
+                elif profile.role == 'pompiste':
+                    return redirect('pompiste_dashbord')
+                else:
+                    messages.error(request, "Your account doesn't have a role assigned. Please contact admin.")
                     return redirect('sing_in')
-            else:
-                messages.error(request, "Your username and/or password were incorrect.")
+            except Profile.DoesNotExist:
+                messages.error(request, "Your profile does not exist. Please contact admin.")
+                return redirect('sing_in')
         else:
-            messages.error(request, "The user does not exist.")
-    return render(request, 'users/login.html', {})
+            messages.error(request, "Your username and/or password were incorrect.")
+            return redirect('sing_in')
 
+    return render(request, 'users/login.html', {})
+@api_view(['POST'])
+def api_sign_in(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+
+    user = authenticate(request, username=email, password=password)
+    if user is not None:
+        login(request, user)
+        token, created = Token.objects.get_or_create(user=user)
+        return JsonResponse({'token': token.key}, status=status.HTTP_200_OK)
+    else:
+        return JsonResponse({'error': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 def sing_up(request, admin_creation=False):
     error = False
     message = ""
@@ -181,24 +198,22 @@ def sing_up(request, admin_creation=False):
         repassword = request.POST.get('repassword', None)
         tel = request.POST.get('tel', None)
 
-        # Email validation
         try:
             validate_email(email)
         except:
             error = True
             message = "Enter un email valide svp!"
 
-        # Password check
         if not error and password != repassword:
             error = True
             message = "Les deux mot de passe ne correspondent pas!"
 
-        # Check if user exists
+        
         if not error and User.objects.filter(Q(email=email) | Q(username=name)).exists():
             error = True
             message = f"Un utilisateur avec email {email} ou le nom d'utilisateur {name} existe déjà!"
 
-        # Register user
+  
         if not error:
             user = User(username=name, email=email)
             user.set_password(password)
@@ -208,16 +223,16 @@ def sing_up(request, admin_creation=False):
             profile.save()
 
             if admin_creation:
-                # If admin is creating the account, stay on the same page
-                return redirect('dashboard')  # URL name for admin dashboard
+              
+                return redirect('dashboard')  
             else:
-                # For regular user sign-up, redirect to the login page
+              
                 return redirect('sing_in')
 
     context = {
         'error': error,
         'message': message,
-        'is_admin_creation': admin_creation  # Pass this to your template
+        'is_admin_creation': admin_creation 
     }
 
     return render(request, 'users/register.html', context)
@@ -257,11 +272,11 @@ def role_user(request, user_id):
 
 @login_required
 def modify_user(request, user_id):
-    # Retrieve the user object based on the user_id
+   
     user_to_modify = get_object_or_404(User, pk=user_id)
 
     if request.method == 'POST':
-        # Process the submitted form data
+       
         user_to_modify.username = request.POST.get('username')
         user_to_modify.email = request.POST.get('email')
         user_to_modify_tel = request.POST.get('tel')
@@ -275,9 +290,8 @@ def modify_user(request, user_id):
        
         user_to_modify.save()
         messages.success(request, 'User details updated successfully.')
-        return redirect('dashboard')  # Or wherever you want to redirect after update
+        return redirect('dashboard')  
 
-    # For a GET request, display the user modification form with existing data
     context = {
         'user': user_to_modify
     }

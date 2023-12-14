@@ -1,22 +1,18 @@
-from django.urls import path
-from .views import StationDeactivateView
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import StationViewSet
 from .views import (
-    StationListView, 
-    StationCreateView, 
-    StationUpdateView, 
-    StationDeactivateView,
-    station_detail
+    StationViewSet, StationListView, StationCreateView, 
+    StationUpdateView, StationDeactivateView, station_detail
 )
-router = DefaultRouter()
 
+router = DefaultRouter()
 router.register(r'stations', StationViewSet)
 
 app_name = 'station'
-urlpatterns = [
+api_urlpatterns = [
     path('api/', include(router.urls)),
+]
+web_urlpatterns = [
     
     path('', StationListView.as_view(), name='station_list'),
     path('create/', StationCreateView.as_view(), name='station_create'),
@@ -24,5 +20,4 @@ urlpatterns = [
     path('<int:pk>/deactivate/', StationDeactivateView.as_view(), name='station_deactivate'),
     path('<int:pk>/', station_detail, name='station_detail'), 
 ]
-
-
+urlpatterns = web_urlpatterns + api_urlpatterns

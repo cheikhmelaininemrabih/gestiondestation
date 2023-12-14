@@ -10,9 +10,11 @@ from django.contrib.auth.views import LogoutView
 from django.urls import reverse_lazy
 router = DefaultRouter()
 router.register(r'profiles', ProfileViewSet)
-
-urlpatterns = [
-    path('api/', include(router.urls)),
+api_urlpatterns = [
+     path('api/', include(router.urls)),
+]
+web_urlpatterns = [
+   
 
     path('', dashboard, name='dashboard'),
     path('logout/', LogoutView.as_view(next_page=reverse_lazy('sing_in')), name='logout'),
@@ -30,4 +32,4 @@ urlpatterns = [
     path('activate_user/<int:user_id>/', activate_user, name='activate_user'),
     path('role_user/<int:user_id>/', role_user, name='role_user'),
 ]  
-
+urlpatterns = api_urlpatterns + web_urlpatterns

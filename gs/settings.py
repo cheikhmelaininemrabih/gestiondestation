@@ -30,9 +30,6 @@ ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
-# ... Your existing database settings remain unchanged ...
-
-# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Directory where static files will be collected
 
@@ -40,16 +37,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Directory where static fi
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Security settings
+
 SECURE_SSL_REDIRECT = os.getenv('DJANGO_SECURE_SSL_REDIRECT', 'False') == 'True'
 SESSION_COOKIE_SECURE = os.getenv('DJANGO_SESSION_COOKIE_SECURE', 'False') == 'True'
 CSRF_COOKIE_SECURE = os.getenv('DJANGO_CSRF_COOKIE_SECURE', 'False') == 'True'
 X_FRAME_OPTIONS = 'DENY'
 
-# Email backend settings (example for console backend)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# ... rest of your settings ...
 
 
 
@@ -60,6 +54,7 @@ INSTALLED_APPS = [
     'vents.apps.VentsConfig',
     'pompe.apps.PompeConfig',
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
     'pompiste.apps.PompisteConfig',
     'django.contrib.admin',
@@ -81,13 +76,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOWED_ORIGINS = [
     "https://example.com",
     "https://sub.example.com",
     "http://localhost:8000",
     "http://127.0.0.1:9000",
-]
+    'http://localhost:3001',
 
+]
 CORS_ALLOW_HEADERS = [
     "accept",
     "accept-encoding",
@@ -99,6 +96,7 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
 ]
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'gs.urls'
 
@@ -185,6 +183,12 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        # Add other authentication classes if needed
+    ),
+}
 
 
 # Internationalization

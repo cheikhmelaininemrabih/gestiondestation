@@ -1,16 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Include Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3p0RyyKLYB61hoFxmG3KwGp1YCjU4qOgHnzHuyVJ3PGRt9mC6f2Eu6JXkP"
+      crossorigin="anonymous"
+    />
     <title>Pompiste Dashboard</title>
-</head>
-<body>
-    
+  </head>
+  <body>
+    {% block content %}
+    <div class="container mt-5">
+      <h1 class="mb-4">Bienvenue, Pompiste</h1>
+     
+          
+          <a href="{% url 'modify_user' user.id %}" class="btn btn-info btn-sm"
+            >Modifier</a
+          >
+        </form>
+        
+        <a href="{% url 'logout' %}" class="btn btn-danger btn-sm mt-3"
+          >Deconnexion</a
+        >
+      </div>
+    </div>
+    {% endblock content %}
 
-    {% block content%}
-  <h1>Bienvenue, Pompiste</h1>
-
-  <!-- Display assigned cuves and pompes here -->
-  {%endblock content%}
-</body>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+      integrity="sha384-eMNCOe7tC1doJGI3F3CRB+GKPm4lCJl0bDpr0C2f7g5e2UXRuHzS/20jN4/plV4y"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+      integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy4Ck4SOF4y4Ck4Ck4SOF4y4Ck4Ck4Ck4y"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

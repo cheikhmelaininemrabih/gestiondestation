@@ -1,58 +1,95 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Sign Up</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <div class="container mt-4 col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-        <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
+      <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
 
-        {% if error %}
-            <div class="alert alert-danger" role="alert">
-                {{ message }}
-            </div>
-        {% endif %}
+      {% if error %}
+      <div class="alert alert-danger" role="alert">{{ message }}</div>
+      {% endif %}
 
-        <form class="mx-1 mx-md-4" 
-        action="{% if is_admin_creation %}{% url 'admin_sing_up' %}{% else %}{% url 'sing_up' %}{% endif %}" 
-              method="POST">
-            {% csrf_token %}
-            <div class="form-outline mb-4">
-                <input type="text" id="form3Example1c" class="form-control" name="name" required />
-                <label class="form-label" for="form3Example1c">Your Name</label>
-            </div>
+      <form
+        class="mx-1 mx-md-4"
+        action="{% if is_admin_creation %}{% url 'admin_sing_up' %}{% else %}{% url 'sing_up' %}{% endif %}"
+        method="POST"
+      >
+        {% csrf_token %}
+        <div class="form-outline mb-4">
+          <input
+            type="text"
+            id="form3Example1c"
+            class="form-control"
+            name="name"
+            required
+          />
+          <label class="form-label" for="form3Example1c">Your Name</label>
+        </div>
 
-            <div class="form-outline mb-4">
-                <input type="email" id="form3Example3c" class="form-control" name="email" required />
-                <label class="form-label" for="form3Example3c">Your Email</label>
-            </div>
+        <div class="form-outline mb-4">
+          <input
+            type="email"
+            id="form3Example3c"
+            class="form-control"
+            name="email"
+            required
+          />
+          <label class="form-label" for="form3Example3c">Your Email</label>
+        </div>
 
-            <div class="form-outline mb-4">
-                <input type="text" id="form3Example4c" class="form-control" name="tel" required />
-                <label class="form-label" for="form3Example4c">Your Tel</label>
-            </div>
+        <div class="form-outline mb-4">
+          <input
+            type="text"
+            id="form3Example4c"
+            class="form-control"
+            name="tel"
+            required
+          />
+          <label class="form-label" for="form3Example4c">Your Tel</label>
+        </div>
 
-            <div class="form-outline mb-4">
-                <input type="password" id="form3Example5c" class="form-control" name="password" required />
-                <label class="form-label" for="form3Example5c">Password</label>
-            </div>
+        <div class="form-outline mb-4">
+          <input
+            type="password"
+            id="form3Example5c"
+            class="form-control"
+            name="password"
+            required
+          />
+          <label class="form-label" for="form3Example5c">Password</label>
+        </div>
 
-            <div class="form-outline mb-4">
-                <input type="password" id="form3Example4cd" class="form-control" name="repassword" required />
-                <label class="form-label" for="form3Example4cd">Repeat your password</label>
-            </div>
+        <div class="form-outline mb-4">
+          <input
+            type="password"
+            id="form3Example4cd"
+            class="form-control"
+            name="repassword"
+            required
+          />
+          <label class="form-label" for="form3Example4cd"
+            >Repeat your password</label
+          >
+        </div>
 
-            <button type="submit" class="btn btn-primary btn-lg">Register</button>
-        </form>
+        <button type="submit" class="btn btn-primary btn-lg">Register</button>
+      </form>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+  </body>
 </html>

@@ -7,18 +7,13 @@ from .models import Pompe
 from rest_framework import viewsets
 from .models import Pompe
 from .serializers import PompeSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
 
 class PompeViewSet(viewsets.ModelViewSet):
     queryset = Pompe.objects.all()
     serializer_class = PompeSerializer
-
-class PompeListView(ListView):
-    model = Pompe
-    template_name = 'pompe_list.html'
-    context_object_name = 'pompes'
-    def get_queryset(self):
-       
-        return Pompe.objects.filter(is_active=True)
 
 class PompeCreateView(CreateView):
     model = Pompe
@@ -28,16 +23,25 @@ class PompeCreateView(CreateView):
     def get_success_url(self):
         return reverse_lazy('pompe:pompe_list')
 
-
-
-
-
 class PompeUpdateView(UpdateView):
     model = Pompe
     template_name = 'pompe/pompe_form.html'
     fields = ['type', 'model', 'id_cuve', 'id_pompiste']
     def get_success_url(self):
       return reverse_lazy('pompe:pompe_list')
+    def get(self, request, pk):
+        pompe = get_object_or_404(Pompe, pk=pk)
+        return render(request, self.template_name, {'pompe': pompe})
+
+    
+class PompeListView(APIView):
+    """
+    API view to retrieve a list of all active pompes.
+    """
+    def get(self, request):
+        pompes = Pompe.objects.filter(is_active=True)
+        serializer = PompeSerializer(pompes, many=True)
+        return Response(serializer.data)
 
 
 
