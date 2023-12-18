@@ -144,21 +144,18 @@ def responsable_dashbord(request):
 
 def pompiste_dashbord(request):
     return render(request, 'users/pompiste_dashbord.html')
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth import authenticate, login
-import requests
-
 def sing_in(request):
     if request.method == "POST":
         email = request.POST.get('email', None)
         password = request.POST.get('password', None)
+        try:
+            profile = Profile.objects.get(tel=email)
+            user = profile.user
+            authenticated_user = authenticate(request, username=user.username, password=password)
 
-        user = authenticate(request, username=email, password=password)
-        if user is not None:
-            login(request, user)
-            try:
-                profile = Profile.objects.get(user=user)
+            if authenticated_user is not None:
+                login(request, authenticated_user)
+
                 if profile.role == 'admin':
                     return redirect('dashboard')
                 elif profile.role == 'responsable':
@@ -168,11 +165,11 @@ def sing_in(request):
                 else:
                     messages.error(request, "Your account doesn't have a role assigned. Please contact admin.")
                     return redirect('sing_in')
-            except Profile.DoesNotExist:
-                messages.error(request, "Your profile does not exist. Please contact admin.")
+            else:
+                messages.error(request, "Your password was incorrect.")
                 return redirect('sing_in')
-        else:
-            messages.error(request, "Your username and/or password were incorrect.")
+        except Profile.DoesNotExist:
+            messages.error(request, "User with this phone number does not exist.")
             return redirect('sing_in')
 
     return render(request, 'users/login.html', {})
