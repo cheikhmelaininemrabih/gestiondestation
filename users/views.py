@@ -150,12 +150,10 @@ def sing_in(request):
         password = request.POST.get('password', None)
         try:
             profile = Profile.objects.get(tel=email)
-            user = profile.user
+            user=User.objects.get(id=profile.user_id)
             authenticated_user = authenticate(request, username=user.username, password=password)
-
             if authenticated_user is not None:
                 login(request, authenticated_user)
-
                 if profile.role == 'admin':
                     return redirect('dashboard')
                 elif profile.role == 'responsable':
@@ -185,7 +183,7 @@ def api_sign_in(request):
         return JsonResponse({'token': token.key}, status=status.HTTP_200_OK)
     else:
         return JsonResponse({'error': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-def sing_up(request, admin_creation=False):
+def sing_up(request):
     error = False
     message = ""
     if request.method == "POST":
@@ -194,46 +192,43 @@ def sing_up(request, admin_creation=False):
         password = request.POST.get('password', None)
         repassword = request.POST.get('repassword', None)
         tel = request.POST.get('tel', None)
-
+        # Email
         try:
             validate_email(email)
         except:
             error = True
             message = "Enter un email valide svp!"
-
-        if not error and password != repassword:
+        # password
+        if error == False:
+            if password != repassword:
+                error = True
+                message = "Les deux mot de passe ne correspondent pas!"
+        # Exist
+        user = User.objects.filter(Q(email=email) | Q(username=name)).first()
+        if user:
             error = True
-            message = "Les deux mot de passe ne correspondent pas!"
+            message = f"Un utilisateur avec email {email} ou le nom d'utilisateur {name} exist déjà'!"
 
-        
-        if not error and User.objects.filter(Q(email=email) | Q(username=name)).exists():
-            error = True
-            message = f"Un utilisateur avec email {email} ou le nom d'utilisateur {name} existe déjà!"
+        # register
+        if error == False:
+            user = User(
+                username=name,
+                email=email,
+            )
+            user.save()
 
-  
-        if not error:
-            user = User(username=name, email=email)
-            user.set_password(password)
+            user.password = password
+            user.set_password(user.password)
             user.is_active = False
             user.save()
             profile = Profile(user=user, tel=tel, role="None")
             profile.save()
-
-            if admin_creation:
-              
-                return redirect('dashboard')  
-            else:
-              
-                return redirect('sing_in')
-
+            return redirect('sing_in')
     context = {
         'error': error,
-        'message': message,
-        'is_admin_creation': admin_creation 
+        'message': message
     }
-
     return render(request, 'users/register.html', context)
-
 
 import logging
 
