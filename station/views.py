@@ -58,7 +58,6 @@ class StationListView(ListView):
 
     def get_queryset(self):
         return Station.objects.filter(is_active=True)
-
 class StationCreateView(CreateView):
     model = Station
     form_class = StationForm  # Using custom form

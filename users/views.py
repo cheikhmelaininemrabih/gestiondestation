@@ -29,7 +29,8 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from rest_framework import status
-
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 import re
 from django.urls import reverse
@@ -77,7 +78,7 @@ def dashboard(request):
         'responsables': responsables,
         # 'pompistes': pompiste,
     }
-    return render(request, 'users/admin_dashbord.html', context)
+    return context;
 
 def assign_pompiste_to_station(request, station_id):
     station = get_object_or_404(Station, pk=station_id)
@@ -144,65 +145,90 @@ def responsable_dashbord(request):
 
 def pompiste_dashbord(request):
     return render(request, 'users/pompiste_dashbord.html')
+
+
+@csrf_exempt
+def alloo(request):
+    data= json.loads(request.body.decode('utf-8'))
+    num1=data.get('num1',0)
+    num2=data.get('num2',0)
+    return JsonResponse({'num1':num1,"num2":num2})
+
+
+@csrf_exempt
+def sing_in(request):
+    # if request.method == "GET":
+    #     return HttpResponse("Hello")
+
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            num1 = data.get('num1', 0)
+            num2 = data.get('num2', 0)
+            return JsonResponse({'num1': num1, 'num2': num2})
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+
+    return HttpResponse("Invalid request method")
+
+
+@csrf_exempt
 def sing_in(request):
     if request.method == "POST":
-        email = request.POST.get('email', None)
-        password = request.POST.get('password', None)
+        data = json.loads(request.body.decode('utf-8'))
+        username = data.get('email', 0)
+        password = data.get('password', 0)
+        succeus=False
         try:
-            profile = Profile.objects.get(tel=email)
+            profile = Profile.objects.get(tel=username)
             user=User.objects.get(id=profile.user_id)
             authenticated_user = authenticate(request, username=user.username, password=password)
-            if authenticated_user is not None:
+            
+                
+            if authenticated_user:
+                succeus=True
                 login(request, authenticated_user)
                 if profile.role == 'admin':
-                    return redirect('dashboard')
+                    return JsonResponse({'role':"admin","succeus":succeus})
                 elif profile.role == 'responsable':
-                    return redirect('responsable_dashbord')
+                    print("authenticated_user==============",authenticated_user)
+                    return JsonResponse({'role':"responsable","succeus":succeus})
                 elif profile.role == 'pompiste':
-                    return redirect('pompiste_dashbord')
+                    return JsonResponse({'role':"pompiste","succeus":succeus})
                 else:
                     messages.error(request, "Your account doesn't have a role assigned. Please contact admin.")
                     return redirect('sing_in')
             else:
-                messages.error(request, "Your password was incorrect.")
-                return redirect('sing_in')
+                return JsonResponse({'role':"non","succeus":succeus})
         except Profile.DoesNotExist:
             messages.error(request, "User with this phone number does not exist.")
-            return redirect('sing_in')
+            return JsonResponse({'role':"non","succeus":succeus})
 
-    return render(request, 'users/login.html', {})
-@api_view(['POST'])
-def api_sign_in(request):
-    email = request.data.get('email')
-    password = request.data.get('password')
+    return HttpResponse("this method it is not a post")
 
-    user = authenticate(request, username=email, password=password)
-    if user is not None:
-        login(request, user)
-        token, created = Token.objects.get_or_create(user=user)
-        return JsonResponse({'token': token.key}, status=status.HTTP_200_OK)
-    else:
-        return JsonResponse({'error': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+@csrf_exempt
 def sing_up(request):
     error = False
     message = ""
+    succeus=False
     if request.method == "POST":
-        name = request.POST.get('name', None)
-        email = request.POST.get('email', None)
-        password = request.POST.get('password', None)
-        repassword = request.POST.get('repassword', None)
-        tel = request.POST.get('tel', None)
+        data = json.loads(request.body.decode('utf-8'))
+        name = data.get('username', 0)
+        email = data.get('email', 0)
+        password = data.get('password', 0)
+        # repassword = data.get('password_repeat', 0)
+        tel = data.get('tel', 0)
         # Email
-        try:
-            validate_email(email)
-        except:
-            error = True
-            message = "Enter un email valide svp!"
+        # try:
+        #     validate_email(email)
+        # except:
+        #     error = True
+        #     message = "Enter un email valide svp!"
         # password
-        if error == False:
-            if password != repassword:
-                error = True
-                message = "Les deux mot de passe ne correspondent pas!"
+        # if error == False:
+        #     if password != repassword:
+        #         error = True
+        #         message = "Les deux mot de passe ne correspondent pas!"
         # Exist
         user = User.objects.filter(Q(email=email) | Q(username=name)).first()
         if user:
@@ -210,7 +236,8 @@ def sing_up(request):
             message = f"Un utilisateur avec email {email} ou le nom d'utilisateur {name} exist déjà'!"
 
         # register
-        if error == False:
+        if not error:
+            succeus=True
             user = User(
                 username=name,
                 email=email,
@@ -223,12 +250,15 @@ def sing_up(request):
             user.save()
             profile = Profile(user=user, tel=tel, role="None")
             profile.save()
-            return redirect('sing_in')
+            # return redirect('sing_in')
+            message="use is saved successfully"
+            return JsonResponse({'msg':message,"succeus":succeus})
     context = {
         'error': error,
         'message': message
     }
-    return render(request, 'users/register.html', context)
+    return JsonResponse({'msg':message,"succeus":succeus})
+    # return render(request, 'users/register.html', context)
 
 import logging
 

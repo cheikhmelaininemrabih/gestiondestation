@@ -14,8 +14,6 @@ api_urlpatterns = [
      path('api/', include(router.urls)),
 ]
 web_urlpatterns = [
-   
-
     path('', dashboard, name='dashboard'),
     path('logout/', LogoutView.as_view(next_page=reverse_lazy('sing_in')), name='logout'),
      path('admin_signup/', lambda request: sing_up(request, admin_creation=True), name='admin_sing_up'),
