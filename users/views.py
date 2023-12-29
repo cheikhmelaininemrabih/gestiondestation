@@ -171,41 +171,6 @@ def sing_in(request):
 
     return HttpResponse("Invalid request method")
 
-
-@csrf_exempt
-def sing_in(request):
-    if request.method == "POST":
-        data = json.loads(request.body.decode('utf-8'))
-        username = data.get('email', 0)
-        password = data.get('password', 0)
-        succeus=False
-        try:
-            profile = Profile.objects.get(tel=username)
-            user=User.objects.get(id=profile.user_id)
-            authenticated_user = authenticate(request, username=user.username, password=password)
-            
-                
-            if authenticated_user:
-                succeus=True
-                login(request, authenticated_user)
-                if profile.role == 'admin':
-                    return JsonResponse({'role':"admin","succeus":succeus})
-                elif profile.role == 'responsable':
-                    print("authenticated_user==============",authenticated_user)
-                    return JsonResponse({'role':"responsable","succeus":succeus})
-                elif profile.role == 'pompiste':
-                    return JsonResponse({'role':"pompiste","succeus":succeus})
-                else:
-                    messages.error(request, "Your account doesn't have a role assigned. Please contact admin.")
-                    return redirect('sing_in')
-            else:
-                return JsonResponse({'role':"non","succeus":succeus})
-        except Profile.DoesNotExist:
-            messages.error(request, "User with this phone number does not exist.")
-            return JsonResponse({'role':"non","succeus":succeus})
-
-    return HttpResponse("this method it is not a post")
-
 @csrf_exempt
 def sing_up(request):
     error = False
